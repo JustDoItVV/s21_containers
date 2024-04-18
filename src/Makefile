@@ -8,27 +8,26 @@ OS := $(shell uname -s)
 
 PROJECT := s21_containers
 
-all : $(PROJECT).a
+all : test
 
 
 clean :
-	rm -rf *.a *.o
+	rm -rf *.a *.o s21_containers_test
 
 rebuild : clean all
 
 
-$(PROJECT).a : $(wildcard containers/*.cpp)
-	$(CC) $(CFLAGS) -c $+
-	ar rc $(PROJECT).a *.o
-	ranlib $(PROJECT).a
-	rm -rf *.o
+test : $(wildcard containers_tests/*.cpp)
+	# $(CC) $(CFLAGS) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
+	$(CC) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
+	./$(PROJECT)_$@
 
 format :
 	clang-format --style=file:"../materials/linters/.clang-format" -i */*.cpp */*.h
 
 check :
 	clang-format --style=file:"../materials/linters/.clang-format" -n */*.cpp */*.h
-	cppcheck --enable=all --suppress=missingIncludeSystem -$(STANDARD) --language=c++
+	cppcheck --enable=all --suppress=missingIncludeSystem -$(STANDARD) --language=c++ */*.cpp */*.h
 
 valgrind_check :
-	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -s --track-origins=yes $(PROJECT)_test
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -s --track-origins=yes ./$(PROJECT)_test
