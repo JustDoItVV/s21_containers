@@ -2,7 +2,7 @@
 #define __S21_CONTAINERS_QUEUE_H__
 
 #include <iostream>
-// #include <utility>
+#include <utility>
 
 namespace s21{
     template <class T>
