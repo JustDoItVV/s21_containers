@@ -7,7 +7,7 @@
 namespace s21{
     template <class T>
     class queue {
-        private:
+        public:
             // Queue Member type
             using value_type = T;
             using reference = T&;
