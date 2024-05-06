@@ -1,12 +1,17 @@
+# на школьном маке не работает g++
 CC = clang++
 GCOV = gcov
 FLAGS = -Wall -Werror -Wextra -std=c++17
 OPTFLAGS = -pedantic
+# для сборки и линковки на школьном маке
 LTEST = $(shell pkg-config --cflags gtest) 
 LLTEST = $(shell pkg-config --libs gtest) 
+
+#  для компиляции НЕ на школьном маке 
+#  g++ containers_tests/s21_containers_test.cpp -o test -lgtest -pthread
+
 GOFLAGS = --coverage
 GFLAGS = -fprofile-arcs -ftest-coverage
-LIB = s21_matrix_oop.a
 
 OS = $(shell uname)
 OPENOS = vi
