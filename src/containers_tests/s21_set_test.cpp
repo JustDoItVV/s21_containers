@@ -1,6 +1,6 @@
 #include <set>
 
-#include "s21_containers_test.h"
+#include "../s21_containers_test.h"
 
 TEST(set, ConstructorDefaultSet) {
   s21::set<char> setMy;

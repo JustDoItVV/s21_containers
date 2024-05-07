@@ -53,3 +53,4 @@ dkms.conf
 
 .vscode/
 s21_containers_test
+no_push

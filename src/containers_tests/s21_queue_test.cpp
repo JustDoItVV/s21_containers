@@ -1,6 +1,6 @@
 #include <queue>
 
-#include "s21_containers_test.h"
+#include "../s21_containers_test.h"
 
 class Point {
  public:
@@ -16,7 +16,7 @@ class Point {
   double x_, y_;
 };
 
-TEST(Queue_Member_functions, default_constructor) {
+TEST(queue, DefaultConstructor) {
   EXPECT_NO_THROW(s21::queue<int>());
   EXPECT_NO_THROW(s21::queue<char>());
   EXPECT_NO_THROW(s21::queue<double>());
@@ -24,14 +24,14 @@ TEST(Queue_Member_functions, default_constructor) {
   EXPECT_NO_THROW(s21::queue<Point>());
 }
 
-TEST(Queue_Member_functions, initializer_list_constructor) {
+TEST(queue, ConstructorInitializer) {
   EXPECT_NO_THROW(s21::queue<int>({0, 1, 2, 3, 3, 4, 2, 1}));
   EXPECT_NO_THROW(s21::queue<char>({'1', 'a', '[', '\n'}));
   EXPECT_NO_THROW(s21::queue<double>({12.34, 56.78, 0, -346.76}));
   EXPECT_NO_THROW(s21::queue<Point>({Point(1, 2), Point(12, 4), Point()}));
 }
 
-TEST(Queue_Member_functions, copy_constructor) {
+TEST(queue, CopyConstructor) {
   s21::queue<int> queue_int({0, 1, 2, 3});
   EXPECT_NO_THROW(s21::queue<int> queue_other_int = queue_int);
 
@@ -45,7 +45,7 @@ TEST(Queue_Member_functions, copy_constructor) {
   EXPECT_NO_THROW(s21::queue<Point> queue_other_point = queue_point);
 }
 
-TEST(Queue_Member_functions, move_constructor) {
+TEST(queue, MoveConstructor) {
   s21::queue<int> queue_int({0, 1, 2, 3});
   EXPECT_NO_THROW(s21::queue<int> queue_other_int = std::move(queue_int));
 
@@ -60,7 +60,7 @@ TEST(Queue_Member_functions, move_constructor) {
   EXPECT_NO_THROW(s21::queue<Point> queue_other_point = std::move(queue_point));
 }
 
-TEST(Queue_Capacity, empty) {
+TEST(queue, CapacityEmpty) {
   EXPECT_EQ((s21::queue<int>()).empty(), true);
   EXPECT_EQ((s21::queue<char>()).empty(), true);
   EXPECT_EQ((s21::queue<double>()).empty(), true);
@@ -75,7 +75,7 @@ TEST(Queue_Capacity, empty) {
             false);
 }
 
-TEST(Queue_Capacity, size) {
+TEST(queue, CapacitySize) {
   EXPECT_EQ((s21::queue<int>()).size(), (s21::queue<int>::size_type)0);
   EXPECT_EQ((s21::queue<char>()).size(), (s21::queue<char>::size_type)0);
   EXPECT_EQ((s21::queue<double>()).size(), (s21::queue<double>::size_type)0);
@@ -95,7 +95,7 @@ TEST(Queue_Capacity, size) {
             (s21::queue<Point>::size_type)3);
 }
 
-TEST(Queue_Modifiers, push_pop) {
+TEST(queue, PushPopSwap) {
   for (int i = 0; i < 100; ++i) {
     int q;
     s21::queue<int> test, test_other;
