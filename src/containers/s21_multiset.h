@@ -39,7 +39,7 @@ class multiset {
 
   // Modifiers
   void clear() {}
-  iterator insert(const value_type& value) {}
+  iterator insert(const value_type& value) { return NULL; }
   void erase(iterator pos) {}
   void swap(multiset& other) {}
   void merge(multiset& other) {}
