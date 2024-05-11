@@ -2,6 +2,10 @@
 #define __S21_CONTAINERS_VECTOR_H__ 
 
 #include <iostream>
+#include <utility>
+#include <initializer_list>
+#include <iterator>
+#include <memory>
 
 namespace s21 {
     template <class T> 
@@ -10,7 +14,7 @@ namespace s21 {
         // Vector member type
         using value_type = T;
         using reference = T&;
-        using const_refence = const T&; 
+        using const_reference = const T&; 
         using iterator = T*; // or VectorIterator<T> 
         using const_iterator = const T*; // or VectorConstIterator<T>
         using size_type = size_t;
