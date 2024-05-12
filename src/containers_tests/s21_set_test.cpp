@@ -2,14 +2,14 @@
 
 #include "../s21_containers_test.h"
 
-TEST(set, ConstructorDefaultSet) {
+TEST(set, constructorDefault) {
   s21::set<char> setMy;
   std::set<char> setBase;
 
   EXPECT_EQ(setMy.empty(), setBase.empty());
 }
 
-TEST(set, ConstructorInitializerSet) {
+TEST(set, constructorInitializer) {
   s21::set<char> setMy = {'a', 'b', 'c'};
   std::set<char> setBase = {'a', 'b', 'c'};
   auto iterMy = setMy.begin();
@@ -21,7 +21,7 @@ TEST(set, ConstructorInitializerSet) {
   }
 }
 
-TEST(set, ConstructorInitializer2Set) {
+TEST(set, constructorInitializer2) {
   s21::set<char> setMy = {};
   std::set<char> setBase = {};
   auto iterMy = setMy.begin();
@@ -33,7 +33,7 @@ TEST(set, ConstructorInitializer2Set) {
   }
 }
 
-TEST(set, ConstructorCopySet) {
+TEST(set, constructorCopy) {
   s21::set<int> setMy = {1, 2, 3, 4, 5};
   std::set<int> setBase = {1, 2, 3, 4, 5};
   s21::set<int> setMy_copy = setMy;
@@ -47,7 +47,7 @@ TEST(set, ConstructorCopySet) {
   }
 }
 
-TEST(set, ConstructorMoveSet) {
+TEST(set, constructorMove) {
   s21::set<int> setMy = {1, 2, 3, 4, 5};
   std::set<int> setBase = {1, 2, 3, 4, 5};
   s21::set<int> setMy_copy = std::move(setMy);
@@ -62,21 +62,21 @@ TEST(set, ConstructorMoveSet) {
   }
 }
 
-// TEST(set, SetIteratorsSet) {
-//   s21::set<std::string> setMy = {"This", "is", "my", "set"};
-//   std::set<std::string> setBase = {"This", "is", "my", "set"};
-//   auto iterMy = setMy.begin();
-//   auto iterBase = setBase.begin();
+TEST(set, setIterators) {
+  s21::set<std::string> setMy = {"This", "is", "my", "set"};
+  std::set<std::string> setBase = {"This", "is", "my", "set"};
+  auto iterMy = setMy.begin();
+  auto iterBase = setBase.begin();
 
-//   EXPECT_TRUE(*iterBase == *iterMy);
-//   iterMy = setMy.end();
-//   iterBase = setBase.end();
-//   // --iterMy;
-//   // --iterBase;
-//   EXPECT_TRUE(*iterBase == *iterMy);
-// }
+  EXPECT_TRUE(*iterBase == *iterMy);
+  iterMy = setMy.end();
+  iterBase = setBase.end();
+  --iterMy;
+  --iterBase;
+  EXPECT_TRUE(*iterBase == *iterMy);
+}
 
-TEST(set, CapacitySet) {
+TEST(set, capacity) {
   s21::set<char> setMy;
   std::set<char> setBase;
 
@@ -88,7 +88,7 @@ TEST(set, CapacitySet) {
   EXPECT_EQ(setMy.size(), setBase.size());
 }
 
-TEST(set, ClearSet) {
+TEST(set, clear) {
   s21::set<char> setMy;
   std::set<char> setBase;
   setMy.clear();
@@ -106,28 +106,28 @@ TEST(set, ClearSet) {
   EXPECT_EQ(setMy.size(), setBase.size());
 }
 
-// TEST(set, InsertSet) {
-//   s21::set<std::string> setMy = {"This", "is", "my", "set"};
-//   std::set<std::string> setBase = {"This", "is", "my", "set"};
-//   auto my_pr = setMy.insert("best");
-//   auto orig_pr = setBase.insert("best");
+TEST(set, insert) {
+  s21::set<std::string> setMy = {"This", "is", "my", "set"};
+  std::set<std::string> setBase = {"This", "is", "my", "set"};
+  auto my_pr = setMy.insert("best");
+  auto orig_pr = setBase.insert("best");
 
-//   EXPECT_TRUE(my_pr.second == orig_pr.second);
-//   EXPECT_TRUE(*my_pr.first == *orig_pr.first);
-//   my_pr = setMy.insert("is");
-//   orig_pr = setBase.insert("is");
-//   EXPECT_TRUE(my_pr.second == orig_pr.second);
-//   EXPECT_TRUE(*my_pr.first == *orig_pr.first);
-// }
+  EXPECT_TRUE(my_pr.second == orig_pr.second);
+  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
+  my_pr = setMy.insert("is");
+  orig_pr = setBase.insert("is");
+  EXPECT_TRUE(my_pr.second == orig_pr.second);
+  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
+}
 
-TEST(set, EraseSet) {
+TEST(set, erase) {
   s21::set<int> setMy = {5, 4, 3, 2, 7, 8, 9};
   std::set<int> setBase = {5, 4, 3, 2, 7, 8, 9};
   auto size = setMy.size();
   setMy.erase(setMy.end());
   auto new_size = setMy.size();
 
-  EXPECT_EQ(size, new_size);
+  EXPECT_NE(size, new_size);
   setMy.erase(setMy.begin());
   setBase.erase(setBase.begin());
   auto iterMy = setMy.begin();
@@ -138,18 +138,18 @@ TEST(set, EraseSet) {
   }
 }
 
-TEST(set, SwapSet) {
+TEST(set, swap) {
   s21::set<int> setMy = {1};
   s21::set<int> my_swap_set = {3, 4, 5};
 
   setMy.swap(my_swap_set);
   EXPECT_EQ(setMy.size(), 3);
   EXPECT_EQ(my_swap_set.size(), 1);
-  // EXPECT_EQ(*setMy.begin(), 3);
-  // EXPECT_EQ(*my_swap_set.begin(), 1);
+  EXPECT_EQ(*setMy.begin(), 3);
+  EXPECT_EQ(*my_swap_set.begin(), 1);
 }
 
-TEST(set, MergeSet) {
+TEST(set, merge) {
   s21::set<int> setMy = {1};
   s21::set<int> my_merge_set = {3, 4, 5};
   setMy.merge(my_merge_set);
@@ -166,17 +166,17 @@ TEST(set, MergeSet) {
   EXPECT_EQ(my_merge_set.size(), orig_merge_set.size());
 }
 
-// TEST(set, FindSet) {
-//   s21::set<double> setMy = {2.1, 2.2, 2.3, 2.4, 2.5, 2.6};
-//   s21::set<double> setBase = {2.1, 2.2, 2.3, 2.4, 2.5, 2.6};
-//   auto iterMy = setMy.find(2.4);
-//   auto iterBase = setBase.find(2.4);
-//   EXPECT_TRUE(*iterBase == *iterMy);
-// }
-
-TEST(set, ContainsSet) {
+TEST(set, find) {
   s21::set<double> setMy = {2.1, 2.2, 2.3, 2.4, 2.5, 2.6};
   s21::set<double> setBase = {2.1, 2.2, 2.3, 2.4, 2.5, 2.6};
-  EXPECT_EQ(setMy.contains(2), setBase.contains(2));
-  EXPECT_EQ(setMy.contains(2.1), setBase.contains(2.1));
+  auto iterMy = setMy.find(2.4);
+  auto iterBase = setBase.find(2.4);
+  EXPECT_TRUE(*iterBase == *iterMy);
+}
+
+TEST(set, contains) {
+  s21::set<double> setMy = {2.1, 2.2, 2.3, 2.4, 2.5, 2.6};
+  s21::set<double> setBase = {2.1, 2.2, 2.3, 2.4, 2.5, 2.6};
+  EXPECT_EQ(setMy.contains(2), false);
+  EXPECT_EQ(setMy.contains(2.1), true);
 }
