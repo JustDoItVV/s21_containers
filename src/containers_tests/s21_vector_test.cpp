@@ -150,4 +150,4 @@ TEST(Vector, Modifier_Swap) {
   EXPECT_EQ(s21_vector_2.size(), s21_vector_3.size());
 }
 
-}  // namespace
+} // namespace
