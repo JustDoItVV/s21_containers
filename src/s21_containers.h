@@ -5,5 +5,6 @@
 #include "containers/s21_multiset.h"
 #include "containers/s21_queue.h"
 #include "containers/s21_set.h"
+#include "containers/s21_vector.h"
 
 #endif
