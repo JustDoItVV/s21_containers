@@ -9,6 +9,7 @@
 
 namespace s21 {
 template <class T> class vector {
+
 public:
   // Vector member type
   using value_type = T;
@@ -18,39 +19,100 @@ public:
   using const_iterator = const T *; // or VectorConstIterator<T>
   using size_type = size_t;
 
+public:
   // Vector Member functions
-  vector() {}
-  vector(size_type n) {}
-  vector(std::initializer_list<value_type> const &items) {}
-  vector(const vector &v) {}
-  vector(vector &&v) {}
-  ~vector() {}
+  vector() : sz(0), cap(5), arr(new value_type[cap]) {}
+
+  vector(size_type n) : vector() {
+    sz = n;
+    cap = n;
+    if (sz > 0) {
+      arr = new value_type[n];
+    }
+  }
+
+  vector(std::initializer_list<value_type> const &items) : sz(items.size()), cap(items.size()), arr(new value_type[cap]){
+    std::copy(items.begin(), items.end(), arr);
+  }
+  
+  vector(const vector &v) : sz(v.sz), cap(v.cap), arr(new value_type[cap]) {
+    std::copy(v.begin(), v.end(), arr);
+  }
+
+  vector(vector &&v) : sz(v.sz), cap(v.cap), arr(v.arr) {
+    v.sz = 0;
+    v.cap = 0; 
+    v.arr = nullptr;
+  }
+
+  ~vector() { if(arr) delete arr; }
+
   vector operator=(vector &&v) {}
 
   // Vector Element access
-  reference at(size_type pos) { return 0; }
-  reference operator[](size_type pos) { return 0; }
-  const_reference front() {
-    const_reference res = 0;
-    return res;
+  reference at(size_type pos) { 
+    if(pos >= sz) {
+      throw std::out_of_range("Memory error: no such element");
+    }
+      return arr[pos]; 
   }
-  const_reference back() {
-    const_reference res = 0;
-    return res;
+
+  const_reference at(size_type pos) const { 
+    if(pos >= sz) {
+      throw std::out_of_range("Memory error: no such element");
+    }
+      return arr[pos];
   }
-  T *data() { return nullptr; }
+
+  reference operator[](size_type pos) { return at(pos); }
+
+  const_reference front() const { return arr[0]; }
+  
+  const_reference back() const { return arr[sz - 1]; }
+
+  T *data() { return arr; }
 
   // Vector Iterators
-  iterator begin() { return nullptr; }
-  iterator end() { return nullptr; }
+  iterator begin() { return arr; }
+  iterator end() { return arr + sz; }
+  const_iterator begin() const { return arr; }
+  const_iterator end() const { return arr + sz; }
 
   // Capacity
-  bool empty() { return false; }
-  size_type size() { return 0; }
-  size_type max_size() { return 0; }
-  void reserve(size_type size) {}
-  size_type capacity() { return 0; }
-  void shrink_to_fit() {}
+  size_type size() { return sz; }
+
+  bool empty() { return sz == 0; }
+
+  size_type max_size() { return std::numeric_limits<size_type>::max() / sizeof(size_type); }  // написала, но не поняла
+  
+  void reserve(size_type size) {
+    if(size > max_size()) {
+      std::length_error("Reserve Error: max size exceeded");
+    }
+    if(size > cap) {
+      iterator tmp = arr;
+      arr = new value_type[size];
+      for(size_type i = 0; i < size; ++i) {
+        arr[i] = tmp[i];
+      }
+      delete tmp;
+      cap = size;
+    }
+  }
+
+  size_type capacity() { return cap; }
+
+  void shrink_to_fit() {
+    if(sz < cap) {
+      iterator tmp = arr; 
+      arr = new value_type[sz];
+      for(size_type i = 0; i < sz; ++i) {
+        arr[i] = tmp[i];
+      }
+      delete tmp; 
+      cap = sz;
+    }
+  }
 
   // Vector Modifiers
   void clear() {}
@@ -58,7 +120,16 @@ public:
   void erase(iterator pos) {}
   void push_back(const_reference value) {}
   void pop_back() {}
-  void swap(vector &other) {}
+  void swap(vector &other) {
+    std::swap(sz, other.sz);
+    std::swap(cap, other.cap);
+    std::swap(arr, other.arr);
+  }
+
+private:
+  size_type sz;
+  size_type cap;
+  iterator arr;
 };
 }; // namespace s21
 
