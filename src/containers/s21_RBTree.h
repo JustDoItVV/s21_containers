@@ -29,6 +29,7 @@ class RBTree {
     Node *left, *parent, *right;
     enum NodeColor color;
     Node();
+    Node(NodeColor color);
   };
 
   RBTree();
@@ -56,9 +57,10 @@ class RBTree {
    public:
     friend RBTree<Key, Value>;
     Node *node;
+    Node *endParent;
 
     Iterator();
-    Iterator(Node *node);
+    Iterator(Node *node, Node *previous = nullptr);
 
     iterator &operator++();
     iterator operator++(int);
@@ -74,12 +76,12 @@ class RBTree {
 
   class ConstIterator : public Iterator {
    public:
-    ConstIterator();
+    ConstIterator() : Iterator(){};
 
     const_reference operator*();
   };
 
-  //  protected:
+ protected:
   Node *root;
 
   enum Direction { LEFT, RIGHT };
@@ -96,11 +98,20 @@ class RBTree {
   static Node *findMax(Node *node);
   Node *findNode(Node *node, value_type value);
   size_type calculateSize(Node *node);
+  void destroy(Node *node);
 };
+
+/***************************
+ * Constructors
+ * *************************/
 
 template <typename Key, typename Value>
 RBTree<Key, Value>::Node::Node()
     : left(nullptr), parent(nullptr), right(nullptr), color(RED) {}
+
+template <typename Key, typename Value>
+RBTree<Key, Value>::Node::Node(NodeColor color)
+    : left(nullptr), parent(nullptr), right(nullptr), color(color) {}
 
 template <typename Key, typename Value>
 RBTree<Key, Value>::RBTree() : root(nullptr) {}
@@ -122,7 +133,13 @@ RBTree<Key, Value>::RBTree(RBTree &&other) {
 }
 
 template <typename Key, typename Value>
-RBTree<Key, Value>::~RBTree() {}
+RBTree<Key, Value>::~RBTree() {
+  clear();
+}
+
+/***************************
+ * RBTree container methods (public)
+ * *************************/
 
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::RBTree &RBTree<Key, Value>::operator=(
@@ -158,7 +175,7 @@ typename RBTree<Key, Value>::iterator RBTree<Key, Value>::begin() {
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::iterator RBTree<Key, Value>::end() {
   Node *node = findMax(root);
-  return Iterator(node);
+  return Iterator(nullptr, node);
 }
 
 template <typename Key, typename Value>
@@ -173,11 +190,14 @@ typename RBTree<Key, Value>::size_type RBTree<Key, Value>::size() {
 
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::size_type RBTree<Key, Value>::max_size() {
-  return 100;
+  return std::numeric_limits<size_type>::max() / sizeof(Node);
 }
 
 template <typename Key, typename Value>
-void RBTree<Key, Value>::clear() {}
+void RBTree<Key, Value>::clear() {
+  destroy(root);
+  root = nullptr;
+}
 
 template <typename Key, typename Value>
 typename std::pair<typename RBTree<Key, Value>::iterator, bool>
@@ -186,18 +206,31 @@ RBTree<Key, Value>::insert(const value_type &value) {
   node->value = value;
   Node *insertedNode = insertNode(node);
   iterator it = Iterator(insertedNode == node ? node : insertedNode);
-  std::pair<iterator, bool> b(it, insertedNode == node);
-  return b;
+  std::pair<iterator, bool> insertResult(it, insertedNode == node);
+  return insertResult;
 }
 
 template <typename Key, typename Value>
-void RBTree<Key, Value>::erase(iterator pos) {}
+void RBTree<Key, Value>::erase(iterator pos) {
+  if (root == nullptr || pos.node == nullptr) return;
+  deleteNode(pos.node);
+}
 
 template <typename Key, typename Value>
-void RBTree<Key, Value>::swap(RBTree &other) {}
+void RBTree<Key, Value>::swap(RBTree &other) {
+  std::swap(root, other.root);
+}
 
 template <typename Key, typename Value>
-void RBTree<Key, Value>::merge(RBTree &other) {}
+void RBTree<Key, Value>::merge(RBTree &other) {
+  RBTree constTree(other);
+  Iterator it = constTree.begin();
+  Iterator itEnd = other.end();
+
+  for (; it != itEnd; ++it)
+    std::pair<Iterator, bool> insertResult = insert(*it);
+  other.clear();
+}
 
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::iterator RBTree<Key, Value>::find(
@@ -220,7 +253,9 @@ template <typename Key, typename Value>
 RBTree<Key, Value>::Iterator::Iterator() : node(nullptr) {}
 
 template <typename Key, typename Value>
-RBTree<Key, Value>::Iterator::Iterator(RBTree::Node *node) : node(node) {}
+RBTree<Key, Value>::Iterator::Iterator(RBTree::Node *node,
+                                       RBTree::Node *endParent)
+    : node(node), endParent(endParent) {}
 
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::Node *RBTree<Key, Value>::Iterator::moveForward() {
@@ -233,13 +268,18 @@ typename RBTree<Key, Value>::Node *RBTree<Key, Value>::Iterator::moveForward() {
     node = parent;
     parent = parent->parent;
   }
+
   return parent;
 }
 
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::Node *
 RBTree<Key, Value>::Iterator::moveBackward() {
-  if (node->left != nullptr) return findMax(node->right);
+  if (node == nullptr && endParent != nullptr) {
+    node = endParent;
+    return endParent;
+  }
+  if (node->left != nullptr) return findMax(node->left);
 
   Node *parent = node->parent;
   if (parent->left == node) return node;
@@ -249,6 +289,12 @@ RBTree<Key, Value>::Iterator::moveBackward() {
     parent = parent->parent;
   }
   return parent;
+}
+
+template <typename Key, typename Value>
+typename RBTree<Key, Value>::const_reference
+RBTree<Key, Value>::ConstIterator::operator*() {
+  return (const_reference)Iterator::operator*();
 }
 
 template <typename Key, typename Value>
@@ -264,7 +310,8 @@ RBTree<Key, Value>::Iterator::operator*() {
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::iterator &
 RBTree<Key, Value>::Iterator::operator++() {
-  node = moveForward();
+  Node *tmp = moveForward();
+  node = tmp == node ? nullptr : tmp;
   return *this;
 }
 
@@ -369,6 +416,7 @@ typename RBTree<Key, Value>::Node *RBTree<Key, Value>::insertNode(Node *node) {
   node->parent = parent;
 
   fixInsertion(node);
+
   return node;
 }
 
@@ -552,6 +600,14 @@ typename RBTree<Key, Value>::size_type RBTree<Key, Value>::calculateSize(
   size_type leftSize = calculateSize(node->left);
   size_type rightSize = calculateSize(node->right);
   return 1 + leftSize + rightSize;
+}
+
+template <typename Key, typename Value>
+void RBTree<Key, Value>::destroy(Node *node) {
+  if (node == nullptr) return;
+  destroy(node->left);
+  destroy(node->right);
+  delete node;
 }
 
 template <typename Key, typename Value>

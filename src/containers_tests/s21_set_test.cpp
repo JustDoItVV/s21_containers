@@ -2,14 +2,6 @@
 
 #include "../s21_containers_test.h"
 
-TEST(set, constructorDefault) {
-  s21::set<char> setMy;
-  std::set<char> setBase;
-  auto isEmpty = setMy.empty();
-
-  EXPECT_EQ(isEmpty, setBase.empty());
-}
-
 TEST(set, constructorInitializer) {
   s21::set<char> setMy{'a', 'b', 'c'};
   std::set<char> setBase{'a', 'b', 'c'};
@@ -63,7 +55,7 @@ TEST(set, constructorMove) {
     EXPECT_EQ(*iterMy, *iterBase);
 }
 
-TEST(set, iteratorsBegin) {
+TEST(set, begin) {
   s21::set<std::string> setMy{"This", "is", "my", "set"};
   std::set<std::string> setBase{"This", "is", "my", "set"};
   auto iterMy = setMy.begin();
@@ -75,19 +67,25 @@ TEST(set, iteratorsBegin) {
   EXPECT_EQ(*iterMy, *iterBase);
 }
 
-TEST(set, iteratorsEnd) {
+TEST(set, end) {
   s21::set<std::string> setMy{"This", "is", "my", "set"};
   std::set<std::string> setBase{"This", "is", "my", "set"};
   auto iterMy = setMy.end();
   auto iterBase = setBase.end();
 
-  iterBase--;  // в стнадартном контейнере ссылка на nil правый лист последнего
-               // элемента, т.е. последний элемент является предпоследним
-               // итератором (вероятно надо править реализацию s21::RBtree)
-  EXPECT_EQ(*iterMy, *iterBase);
   iterMy--;
   iterBase--;
+  // в стнадартном контейнере ссылка на nil правый лист последнего
+  // элемента, т.е. последний элемент является предпоследним итератором
   EXPECT_EQ(*iterMy, *iterBase);
+}
+
+TEST(set, constructorDefault) {
+  s21::set<char> setMy;
+  std::set<char> setBase;
+  auto isEmpty = setMy.empty();
+
+  EXPECT_EQ(isEmpty, setBase.empty());
 }
 
 TEST(set, size) {
@@ -102,18 +100,13 @@ TEST(set, size) {
   EXPECT_EQ(setMy.size(), setBase.size());
 }
 
-TEST(set, insert) {
-  s21::set<std::string> setMy = {"This", "is", "my", "set"};
-  std::set<std::string> setBase = {"This", "is", "my", "set"};
-  auto my_pr = setMy.insert("best");
-  auto orig_pr = setBase.insert("best");
+TEST(set, max_size) {
+  s21::set<double> setMy;
+  std::set<double> setBase;
 
-  EXPECT_TRUE(my_pr.second == orig_pr.second);
-  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
-  my_pr = setMy.insert("is");
-  orig_pr = setBase.insert("is");
-  EXPECT_TRUE(my_pr.second == orig_pr.second);
-  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
+  auto maxSize = setMy.max_size();
+
+  EXPECT_GT(maxSize, 0);
 }
 
 TEST(set, clear) {
@@ -134,11 +127,27 @@ TEST(set, clear) {
   EXPECT_EQ(setMy.size(), setBase.size());
 }
 
+TEST(set, insert) {
+  s21::set<std::string> setMy = {"This", "is", "my", "set"};
+  std::set<std::string> setBase = {"This", "is", "my", "set"};
+  auto my_pr = setMy.insert("best");
+  auto orig_pr = setBase.insert("best");
+
+  EXPECT_TRUE(my_pr.second == orig_pr.second);
+  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
+  my_pr = setMy.insert("is");
+  orig_pr = setBase.insert("is");
+  EXPECT_TRUE(my_pr.second == orig_pr.second);
+  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
+}
+
 TEST(set, erase) {
   s21::set<int> setMy = {5, 4, 3, 2, 7, 8, 9};
   std::set<int> setBase = {5, 4, 3, 2, 7, 8, 9};
   auto size = setMy.size();
-  setMy.erase(setMy.end());
+  auto itEnd = setMy.end();
+  itEnd--;
+  setMy.erase(itEnd);
   auto new_size = setMy.size();
 
   EXPECT_NE(size, new_size);
@@ -166,12 +175,11 @@ TEST(set, swap) {
 
 TEST(set, merge) {
   s21::set<int> setMy = {1};
-  s21::set<int> my_merge_set = {3, 4, 5};
-  setMy.merge(my_merge_set);
-
+  s21::set<int> setMyForMerge = {3, 4, 5};
+  setMy.merge(setMyForMerge);
   std::set<int> setBase = {1};
-  std::set<int> orig_merge_set = {3, 4, 5};
-  setBase.merge(orig_merge_set);
+  std::set<int> setBaseForMerge = {3, 4, 5};
+  setBase.merge(setBaseForMerge);
   auto iterMy = setMy.begin();
   auto iterBase = setBase.begin();
   auto iterMyEnd = setMy.end();
@@ -179,7 +187,7 @@ TEST(set, merge) {
   for (; iterMy != iterMyEnd; ++iterMy, ++iterBase)
     EXPECT_EQ(*iterMy, *iterBase);
   EXPECT_EQ(setBase.size(), setMy.size());
-  EXPECT_EQ(my_merge_set.size(), orig_merge_set.size());
+  EXPECT_EQ(setMyForMerge.size(), setBaseForMerge.size());
 }
 
 TEST(set, find) {
