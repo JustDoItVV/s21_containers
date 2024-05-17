@@ -74,74 +74,6 @@ TEST(vector, elementAccsessAt) {
   EXPECT_NO_THROW(a.at(4) = 7);
 }
 
-// TEST(vector, ModifierInsert) {
-//   s21::vector<int> s21_vector_1 = {'a', 'c', 'd'};
-//   s21::vector<int> s21_vector_2 = {'a', 'b', 'c', 'd'};
-
-//   auto it = s21_vector_1.begin();
-//   ++it;
-//   s21_vector_1.insert(it, 'b');
-//   auto it1 = s21_vector_1.begin();
-//   auto it2 = s21_vector_2.begin();
-//   while (it1 != s21_vector_1.end()) {
-//     EXPECT_EQ(*it1, *it2);
-//     ++it1, ++it2;
-//   }
-//   EXPECT_EQ(s21_vector_1.size(), s21_vector_2.size());
-//   s21_vector_1.insert(s21_vector_1.end(), '5');
-//   EXPECT_EQ(s21_vector_1.back(), '5');
-// }
-
-// TEST(vector, ModifierErase) {
-//   s21::vector<int> s21_vector_1 = {'a', 'c', 'd'};
-//   s21::vector<int> s21_vector_2 = {'a', 'b', 'c', 'd'};
-
-//   auto it = s21_vector_2.begin();
-//   ++it;
-//   s21_vector_2.erase(it);
-//   auto it1 = s21_vector_1.begin();
-//   auto it2 = s21_vector_2.begin();
-//   while (it1 != s21_vector_1.end()) {
-//     EXPECT_EQ(*it1, *it2);
-//     ++it1, ++it2;
-//   }
-//   EXPECT_EQ(s21_vector_1.size(), s21_vector_2.size());
-// }
-
-// TEST(vector, ModifierPush) {
-//   s21::vector<int> s21_vector = {1, 2, 3, 4};
-//   std::vector<int> std_vector = {1, 2, 3, 4};
-//   s21_vector.push_back(5);
-//   std_vector.push_back(5);
-//   EXPECT_EQ(s21_vector.front(), std_vector.front());
-//   EXPECT_EQ(s21_vector.back(), std_vector.back());
-//   EXPECT_EQ(s21_vector.size(), std_vector.size());
-//   EXPECT_EQ(s21_vector.empty(), std_vector.empty());
-//   auto it1 = s21_vector.begin();
-//   auto it2 = std_vector.begin();
-//   while (it1 != s21_vector.end()) {
-//     EXPECT_EQ(*it1, *it2);
-//     ++it1, ++it2;
-//   }
-// }
-
-// TEST(vector, ModifierPop) {
-//   s21::vector<int> s21_vector = {1, 2, 3, 4};
-//   std::vector<int> std_vector = {1, 2, 3, 4};
-//   s21_vector.pop_back();
-//   std_vector.pop_back();
-//   EXPECT_EQ(s21_vector.front(), std_vector.front());
-//   EXPECT_EQ(s21_vector.back(), std_vector.back());
-//   EXPECT_EQ(s21_vector.size(), std_vector.size());
-//   EXPECT_EQ(s21_vector.empty(), std_vector.empty());
-//   auto it1 = s21_vector.begin();
-//   auto it2 = std_vector.begin();
-//   while (it1 != s21_vector.end()) {
-//     EXPECT_EQ(*it1, *it2);
-//     ++it1, ++it2;
-//   }
-// }
-
 TEST(vector, capacityMaxSize) {
   s21::vector<int> v;
   // You can't predict the exact max size, but it should be a very large value
@@ -179,6 +111,166 @@ TEST(vector, capacityShrinkToFitNonEmptyVector) {
   EXPECT_LE(v.capacity(), initialCapacity);
 }
 
+TEST(vector, modifiersClearEmptyVector) {
+  s21::vector<int> v;
+  v.clear();
+  EXPECT_TRUE(v.empty());
+  EXPECT_EQ(v.size(), 0);
+  // Clearing an empty vector should not affect capacity
+  EXPECT_GE(v.capacity(), 0);
+}
+
+TEST(vector, modifierClearNonEmptyVector) {
+  s21::vector<int> v = {1, 2, 3, 4, 5};
+  v.clear();
+  EXPECT_TRUE(v.empty());
+  EXPECT_EQ(v.size(), 0);
+  // Clearing a vector should not affect capacity immediately
+  EXPECT_GE(v.capacity(), 0);
+}
+
+TEST(vector, modifiersInsertBeginning) {
+  s21::vector<int> v = {2, 3, 4};
+  auto it = v.insert(v.begin(), 1);
+  EXPECT_EQ(v.size(), 4);
+  EXPECT_EQ(v[0], 1);
+  EXPECT_EQ(*it, 1);
+}
+
+TEST(vector, modifiersInsertMiddle) {
+  s21::vector<int> v = {1, 3, 4};
+  auto it = v.insert(v.begin() + 1, 2);
+  EXPECT_EQ(v.size(), 4);
+  EXPECT_EQ(v[1], 2);
+  EXPECT_EQ(*it, 2);
+}
+
+TEST(vector, modifiersInsertEnd) {
+  s21::vector<int> v = {1, 2, 3};
+  auto it = v.insert(v.end(), 4);
+  EXPECT_EQ(v.size(), 4);
+  EXPECT_EQ(v[3], 4);
+  EXPECT_EQ(*it, 4);
+}
+
+TEST(vector, modifiersInsert) {
+  s21::vector<int> s21_vector_1 = {'a', 'c', 'd'};
+  s21::vector<int> s21_vector_2 = {'a', 'b', 'c', 'd'};
+
+  auto it = s21_vector_1.begin();
+  ++it;
+  s21_vector_1.insert(it, 'b');
+  auto it1 = s21_vector_1.begin();
+  auto it2 = s21_vector_2.begin();
+  while (it1 != s21_vector_1.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+  EXPECT_EQ(s21_vector_1.size(), s21_vector_2.size());
+  s21_vector_1.insert(s21_vector_1.end(), '5');
+  EXPECT_EQ(s21_vector_1.back(), '5');
+}
+
+TEST(vector, modifiersErase) {
+  s21::vector<int> s21_vector_1 = {'a', 'c', 'd'};
+  s21::vector<int> s21_vector_2 = {'a', 'b', 'c', 'd'};
+
+  auto it = s21_vector_2.begin();
+  ++it;
+  s21_vector_2.erase(it);
+  auto it1 = s21_vector_1.begin();
+  auto it2 = s21_vector_2.begin();
+  while (it1 != s21_vector_1.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+  EXPECT_EQ(s21_vector_1.size(), s21_vector_2.size());
+}
+
+TEST(vector, modifiersEraseBeginning) {
+  s21::vector<int> v = {1, 2, 3, 4};
+  v.erase(v.begin());  // Erase the first element
+  EXPECT_EQ(v.size(), 3);
+  EXPECT_EQ(v[0], 2);
+}
+
+TEST(vector, modifiersEraseMiddle) {
+  s21::vector<int> v = {1, 2, 3, 4};
+  v.erase(v.begin() + 1);
+  EXPECT_EQ(v.size(), 3);
+  EXPECT_EQ(v[1], 3);
+}
+
+TEST(vector, modifiersEraseEnd) {
+  s21::vector<int> v = {1, 2, 3, 4};
+  v.erase(v.end() - 1);  // Erase the last element
+  EXPECT_EQ(v.size(), 3);
+  EXPECT_EQ(v[2], 3);
+}
+
+TEST(vector, modifiersPush) {
+  s21::vector<int> s21_vector = {1, 2, 3, 4};
+  std::vector<int> std_vector = {1, 2, 3, 4};
+  s21_vector.push_back(5);
+  std_vector.push_back(5);
+  EXPECT_EQ(s21_vector.front(), std_vector.front());
+  EXPECT_EQ(s21_vector.back(), std_vector.back());
+  EXPECT_EQ(s21_vector.size(), std_vector.size());
+  EXPECT_EQ(s21_vector.empty(), std_vector.empty());
+  auto it1 = s21_vector.begin();
+  auto it2 = std_vector.begin();
+  while (it1 != s21_vector.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}
+
+TEST(vector, modifiersPushBackEmptyVector) {
+  s21::vector<int> v;
+  v.push_back(1);
+  EXPECT_EQ(v.size(), 1);
+  EXPECT_EQ(v[0], 1);
+}
+
+TEST(vector, modifiersPushBackNonEmptyVector) {
+  s21::vector<int> v = {1, 2, 3};
+  v.push_back(4);
+  EXPECT_EQ(v.size(), 4);
+  EXPECT_EQ(v[3], 4);
+}
+
+TEST(vector, modifiersPopBackNonEmptyVector) {
+  s21::vector<int> v = {1, 2, 3};
+  v.pop_back();
+  EXPECT_EQ(v.size(), 2);
+  EXPECT_EQ(v.back(), 2);
+}
+
+TEST(vector, modifiersPopBackEmptyVector) {
+  s21::vector<int> v;
+  // Popping from an empty vector should not cause an error (undefined behavior
+  // for some std::vector implementations)
+  v.pop_back();
+  EXPECT_TRUE(v.empty());
+}
+
+TEST(vector, modifiersPop) {
+  s21::vector<int> s21_vector = {1, 2, 3, 4};
+  std::vector<int> std_vector = {1, 2, 3, 4};
+  s21_vector.pop_back();
+  std_vector.pop_back();
+  EXPECT_EQ(s21_vector.front(), std_vector.front());
+  EXPECT_EQ(s21_vector.back(), std_vector.back());
+  EXPECT_EQ(s21_vector.size(), std_vector.size());
+  EXPECT_EQ(s21_vector.empty(), std_vector.empty());
+  auto it1 = s21_vector.begin();
+  auto it2 = std_vector.begin();
+  while (it1 != s21_vector.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}
+
 TEST(vector, modifiersSwap) {
   s21::vector<char> s21_vector_1 = {'a', 'b', 'o', 'b', 'a'};
   s21::vector<char> s21_vector_2 = {'s', 'h', 'l', 'e', 'p', 'p', 'a'};
@@ -201,4 +293,69 @@ TEST(vector, modifiersSwap) {
   EXPECT_EQ(s21_vector_2.size(), s21_vector_3.size());
 }
 
-} // namespace
+TEST(vector, modifiersSwapNonEmptyVectors) {
+  s21::vector<int> v1 = {1, 2, 3};
+  s21::vector<int> v2 = {4, 5, 6};
+
+  v1.swap(v2);
+
+  EXPECT_EQ(v1.size(), 3);
+  EXPECT_EQ(v2.size(), 3);
+
+  EXPECT_EQ(v1[0], 4);
+  EXPECT_EQ(v1[2], 6);
+
+  EXPECT_EQ(v2[0], 1);
+  EXPECT_EQ(v2[2], 3);
+}
+
+TEST(vector, modifiersSwapEmptyAndNonEmptyVectors) {
+  s21::vector<int> v1;
+  s21::vector<int> v2 = {1, 2, 3};
+
+  v1.swap(v2);
+
+  EXPECT_EQ(v1.size(), 3);
+  EXPECT_FALSE(v1.empty());
+  EXPECT_EQ(v2.size(), 0);
+  EXPECT_TRUE(v2.empty());
+}
+
+// TEST(VectorTest, InsertMany) {
+//   s21::vector<int> vec = {1, 2, 3, 7, 8};
+//   s21::vector<int>::const_iterator pos = vec.cbegin() + 3;
+
+//   vec.insert_many(pos, 4, 5, 6);
+
+//   // Check the size of the vector after insertion
+//   EXPECT_EQ(vec.size(), 8);
+
+//   // Check the elements after insertion
+//   EXPECT_EQ(vec[0], 1);
+//   EXPECT_EQ(vec[1], 2);
+//   EXPECT_EQ(vec[2], 3);
+//   EXPECT_EQ(vec[3], 4);
+//   EXPECT_EQ(vec[4], 5);
+//   EXPECT_EQ(vec[5], 6);
+//   EXPECT_EQ(vec[6], 7);
+//   EXPECT_EQ(vec[7], 8);
+// }
+
+// TEST(VectorTest, InsertManyBack) {
+//   s21::vector<int> vec = {1, 2, 3};
+
+//   vec.insert_many_back(4, 5, 6);
+
+//   // Check the size of the vector after insertion
+//   EXPECT_EQ(vec.size(), 6);
+
+//   // Check the elements after insertion
+//   EXPECT_EQ(vec[0], 1);
+//   EXPECT_EQ(vec[1], 2);
+//   EXPECT_EQ(vec[2], 3);
+//   EXPECT_EQ(vec[3], 4);
+//   EXPECT_EQ(vec[4], 5);
+//   EXPECT_EQ(vec[5], 6);
+// }
+
+}  // namespace
