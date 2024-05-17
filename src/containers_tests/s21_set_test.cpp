@@ -130,15 +130,15 @@ TEST(set, clear) {
 TEST(set, insert) {
   s21::set<std::string> setMy = {"This", "is", "my", "set"};
   std::set<std::string> setBase = {"This", "is", "my", "set"};
-  auto my_pr = setMy.insert("best");
-  auto orig_pr = setBase.insert("best");
 
-  EXPECT_TRUE(my_pr.second == orig_pr.second);
-  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
-  my_pr = setMy.insert("is");
-  orig_pr = setBase.insert("is");
-  EXPECT_TRUE(my_pr.second == orig_pr.second);
-  EXPECT_TRUE(*my_pr.first == *orig_pr.first);
+  auto inserResultMy = setMy.insert("best");
+  auto insertResultBase = setBase.insert("best");
+  EXPECT_TRUE(inserResultMy.second == insertResultBase.second);
+  EXPECT_TRUE(*inserResultMy.first == *insertResultBase.first);
+  inserResultMy = setMy.insert("is");
+  insertResultBase = setBase.insert("is");
+  EXPECT_TRUE(inserResultMy.second == insertResultBase.second);
+  EXPECT_TRUE(*inserResultMy.first == *insertResultBase.first);
 }
 
 TEST(set, erase) {

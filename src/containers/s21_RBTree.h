@@ -51,7 +51,7 @@ class RBTree {
   void merge(RBTree &other);
   iterator find(const value_type &value);
   bool contains(const value_type &value);
-  void visualize(Node *root);
+  void visualize(Node *root = nullptr);
 
   class Iterator {
    public:
@@ -89,7 +89,7 @@ class RBTree {
   Node *copy(Node *node, Node *parent);
   Node *search(Node *node, value_type value);
   void rotate(Node *node, Direction dir);
-  Node *insertNode(Node *node);
+  std::pair<Node *, bool> insertNode(Node *node);
   void fixInsertion(Node *node);
   void deleteNode(Node *node);
   void fixDeletion(Node *node);
@@ -148,7 +148,7 @@ typename RBTree<Key, Value>::RBTree &RBTree<Key, Value>::operator=(
     root = other.root;
     other.root = nullptr;
   }
-  return this;
+  return *this;
 }
 
 template <typename Key, typename Value>
@@ -156,7 +156,7 @@ typename RBTree<Key, Value>::Node *RBTree<Key, Value>::copy(
     RBTree<Key, Value>::Node *node, RBTree<Key, Value>::Node *parent) {
   if (node == nullptr) return nullptr;
 
-  Node *newNode = new Node;
+  Node *newNode = new Node();
   newNode->value = node->value;
   newNode->parent = parent;
   newNode->color = node->color;
@@ -202,11 +202,16 @@ void RBTree<Key, Value>::clear() {
 template <typename Key, typename Value>
 typename std::pair<typename RBTree<Key, Value>::iterator, bool>
 RBTree<Key, Value>::insert(const value_type &value) {
-  Node *node = new Node;
+  Node *node = new Node();
   node->value = value;
-  Node *insertedNode = insertNode(node);
-  iterator it = Iterator(insertedNode == node ? node : insertedNode);
-  std::pair<iterator, bool> insertResult(it, insertedNode == node);
+
+  std::pair<Node *, bool> inserResult = insertNode(node);
+  bool isInserted = inserResult.second;
+
+  iterator it = Iterator(inserResult.first);
+  std::pair<iterator, bool> insertResult(it, isInserted);
+  if (!isInserted) delete node;
+
   return insertResult;
 }
 
@@ -250,7 +255,7 @@ bool RBTree<Key, Value>::contains(const value_type &value) {
  * *************************/
 
 template <typename Key, typename Value>
-RBTree<Key, Value>::Iterator::Iterator() : node(nullptr) {}
+RBTree<Key, Value>::Iterator::Iterator() : node(nullptr), endParent(nullptr) {}
 
 template <typename Key, typename Value>
 RBTree<Key, Value>::Iterator::Iterator(RBTree::Node *node,
@@ -392,18 +397,19 @@ void RBTree<Key, Value>::rotate(Node *root, Direction dir) {
 }
 
 template <typename Key, typename Value>
-typename RBTree<Key, Value>::Node *RBTree<Key, Value>::insertNode(Node *node) {
+std::pair<typename RBTree<Key, Value>::Node *, bool>
+RBTree<Key, Value>::insertNode(Node *node) {
   Node *parent = nullptr, *root = this->root;
   node->color = RED;
 
   while (root != nullptr) {
     parent = root;
-    if (node->value < root->value)
+    if (node->value == root->value)
+      return std::pair<Node *, bool>(root, false);
+    else if (node->value < root->value)
       root = root->left;
-    else if (node->value > root->value)
-      root = root->right;
     else
-      return root;
+      root = root->right;
   };
 
   if (parent == nullptr)
@@ -417,7 +423,7 @@ typename RBTree<Key, Value>::Node *RBTree<Key, Value>::insertNode(Node *node) {
 
   fixInsertion(node);
 
-  return node;
+  return std::pair<Node *, bool>(node, true);
 }
 
 template <typename Key, typename Value>
@@ -613,7 +619,7 @@ void RBTree<Key, Value>::destroy(Node *node) {
 template <typename Key, typename Value>
 void RBTree<Key, Value>::visualize(Node *root) {
   std::queue<Node *> activeQueue, nextQueue;
-  Node *nil = new Node;
+  Node *nil = new Node();
   nextQueue.push(root != nullptr ? root : nil);
 
   while (!nextQueue.empty()) {
