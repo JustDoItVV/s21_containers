@@ -16,19 +16,25 @@ class set : public RBTree<Key, Key> {
   using size_type = size_t;
 
   set() : RBTree<Key, Key>(){};
-  set(std::initializer_list<Key> const& items){};
+  set(std::initializer_list<Key> const& items) {
+    for (value_type value : items) RBTree<Key, Key>::insert(value);
+  };
   set(const set& other) : RBTree<Key, Key>(other){};
   set(set&& other) : RBTree<Key, Key>(std::move(other)){};
   ~set() = default;
-  set& operator=(set&& s) = default;
+  set& operator=(set&& s) {
+    RBTree<Key, Key>::operator=(std::move(s));
+    return *this;
+  };
 
-  iterator find(const Key& key);
+  iterator find(const key_type& key);
 };
 
 template <typename Key>
 typename set<Key>::iterator set<Key>::find(const Key& key) {
-  return set<Key>::begin();
+  return RBTree<Key, Key>::find(key);
 }
+
 }  // namespace s21
 
 #endif
