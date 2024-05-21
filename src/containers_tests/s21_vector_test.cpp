@@ -2,8 +2,6 @@
 
 #include "../s21_containers_test.h"
 
-namespace {
-
 TEST(vector, constructorDefault) {
   s21::vector<int> s21_vector;
   std::vector<int> std_vector;
@@ -82,10 +80,20 @@ TEST(vector, capacityMaxSize) {
 
 TEST(vector, capacityReserveIncreaseCapacity) {
   s21::vector<int> v;
+  s21::vector<int> v_new(v);  // сделать копию
   size_t initialCapacity = v.capacity();
   size_t newCapacity = initialCapacity + 10;
+
   v.reserve(newCapacity);
+
   EXPECT_GE(v.capacity(), newCapacity);
+
+  auto it1 = v.begin();
+  auto it2 = v_new.begin();
+  while (it1 != v.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
 }
 
 TEST(vector, capacityReserveDecreaseCapacity) {
@@ -357,5 +365,3 @@ TEST(vector, modifiersSwapEmptyAndNonEmptyVectors) {
 //   EXPECT_EQ(vec[4], 5);
 //   EXPECT_EQ(vec[5], 6);
 // }
-
-}  // namespace

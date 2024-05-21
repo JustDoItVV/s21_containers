@@ -21,70 +21,76 @@ class vector {
 
  public:
   // Vector Member functions
-  vector() : sz(0), cap(5), arr(new value_type[cap]) {}
+  vector() : size_(0), capacity_(5), arrPtr_(new value_type[capacity_]{}) {}
 
-  vector(size_type n) : vector() {
-    sz = n;
-    cap = n;
-    if (sz > 0) {
-      arr = new value_type[n];
+  vector(size_type n) {
+    size_ = n;
+    capacity_ = n;
+    if (size_ > 0) {
+      arrPtr_ = new value_type[n]{};
     }
   }
 
   vector(std::initializer_list<value_type> const &items)
-      : sz(items.size()), cap(items.size()), arr(new value_type[cap]) {
-    std::copy(items.begin(), items.end(), arr);
+      : size_(items.size()),
+        capacity_(items.size()),
+        arrPtr_(new value_type[capacity_]{}) {
+    std::copy(items.begin(), items.end(), arrPtr_);
   }
 
-  vector(const vector &v) : sz(v.sz), cap(v.cap), arr(new value_type[cap]) {
-    std::copy(v.begin(), v.end(), arr);
+  vector(const vector &v)
+      : size_(v.size_),
+        capacity_(v.capacity_),
+        arrPtr_(new value_type[capacity_]{}) {
+    std::copy(v.begin(), v.end(), arrPtr_);
   }
 
-  vector(vector &&v) : sz(v.sz), cap(v.cap), arr(v.arr) {
-    v.sz = 0;
-    v.cap = 0;
-    v.arr = nullptr;
+  vector(vector &&v)
+      : size_(v.size_), capacity_(v.capacity_), arrPtr_(v.arrPtr_) {
+    v.size_ = 0;
+    v.capacity_ = 0;
+    v.arrPtr_ = nullptr;
   }
 
   ~vector() {
-    if (arr) delete arr;
+    if (arrPtr_) delete[] arrPtr_;
   }
 
-  vector operator=(vector &&v) {}
+  vector operator=(vector &&v) {}  // TODO !!!!
 
   // Vector Element access
   reference at(size_type pos) {
-    if (pos >= sz) {
+    if (pos >= size_) {
       throw std::out_of_range("Memory error: no such element");
     }
-    return arr[pos];
+    return arrPtr_[pos];
   }
 
   const_reference at(size_type pos) const {
-    if (pos >= sz) {
+    if (pos >= size_) {
       throw std::out_of_range("Memory error: no such element");
     }
-    return arr[pos];
+    return arrPtr_[pos];
   }
 
-  reference operator[](size_type pos) { return arr[pos]; }
+  reference operator[](size_type pos) { return arrPtr_[pos]; }
 
-  const_reference front() const { return arr[0]; }
+  const_reference front() const { return arrPtr_[0]; }
 
-  const_reference back() const { return arr[sz - 1]; }
+  const_reference back() const { return arrPtr_[size_ - 1]; }
 
-  T *data() { return arr; }
+  T *data() { return arrPtr_; }
 
   // Vector Iterators
-  iterator begin() { return arr; }
-  iterator end() { return arr + sz; }
-  const_iterator begin() const { return arr; }
-  const_iterator end() const { return arr + sz; }
+  iterator begin() { return arrPtr_; }
+  iterator end() { return arrPtr_ + size_; }
+  const_iterator begin() const { return arrPtr_; }
+  const_iterator end() const { return arrPtr_ + size_; }
 
   // Capacity
-  size_type size() { return sz; }
+  size_type size() { return size_; }
 
-  bool empty() { return sz == 0; }
+  bool empty() { return size_ == 0; }
 
   size_type max_size() {
     return std::numeric_limits<size_type>::max() / sizeof(size_type);
@@ -94,38 +100,38 @@ class vector {
     if (size > max_size()) {
       std::length_error("Reserve Error: max size exceeded");
     }
-    if (size > cap) {
-      iterator tmp = arr;
-      arr = new value_type[size];
-      for (size_type i = 0; i < size; ++i) {
-        arr[i] = tmp[i];
+    if (size > capacity_) {
+      iterator tmp = arrPtr_;
+      arrPtr_ = new value_type[size]{};
+      for (size_type i = 0; i < size_; ++i) {
+        arrPtr_[i] = tmp[i];
       }
-      delete tmp;
-      cap = size;
+      delete[] tmp;
+      capacity_ = size;
     }
   }
 
-  size_type capacity() { return cap; }
+  size_type capacity() { return capacity_; }
 
   void shrink_to_fit() {
-    if (sz < cap) {
-      iterator tmp = arr;
-      arr = new value_type[sz];
-      for (size_type i = 0; i < sz; ++i) {
-        arr[i] = tmp[i];
+    if (size_ < capacity_) {
+      iterator tmp = arrPtr_;
+      arrPtr_ = new value_type[size_]{};
+      for (size_type i = 0; i < size_; ++i) {
+        arrPtr_[i] = tmp[i];
       }
-      delete tmp;
-      cap = sz;
+      delete[] tmp;
+      capacity_ = size_;
     }
   }
 
   // Vector Modifiers
-  void clear() { sz = 0; }
+  void clear() { size_ = 0; }
 
   iterator insert(iterator pos, const_reference value) {
-    if (cap == sz) {
+    if (capacity_ == size_) {
       size_type index = pos - begin();  // вычисляем индекс
-      reserve(cap * 2);
+      reserve(capacity_ * 2);
       pos = begin() + index;  // находим новый итератор
     }
     value_type prev = value;
@@ -138,7 +144,7 @@ class vector {
         *it = prev;
       }
     }
-    sz++;
+    size_++;
     return pos;
   }
 
@@ -147,32 +153,32 @@ class vector {
       for (iterator it = pos; it < end() - 1; ++it) {
         *it = *(it + 1);
       }
-      sz--;
+      size_--;
     }
   }
 
   void push_back(const_reference value) {
-    if (sz == cap) {
-      reserve(cap * 2);
+    if (size_ == capacity_) {
+      reserve(capacity_ * 2);
     }
-    arr[sz] = value;
-    sz++;
+    arrPtr_[size_] = value;
+    size_++;
   }
 
   void pop_back() {
-    if (sz) sz--;
+    if (size_) size_--;
   }
 
   void swap(vector &other) {
-    std::swap(sz, other.sz);
-    std::swap(cap, other.cap);
-    std::swap(arr, other.arr);
+    std::swap(size_, other.size_);
+    std::swap(capacity_, other.capacity_);
+    std::swap(arrPtr_, other.arrPtr_);
   }
 
  private:
-  size_type sz;
-  size_type cap;
-  iterator arr;
+  size_type size_;
+  size_type capacity_;
+  iterator arrPtr_;
 };
 };  // namespace s21
 
