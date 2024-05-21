@@ -56,7 +56,18 @@ class vector {
     if (arrPtr_) delete[] arrPtr_;
   }
 
-  vector operator=(vector &&v) {}  // TODO !!!!
+  vector operator=(vector &&v) {
+    if(this != &v) {
+      if(arrPtr_) { delete[] arrPtr_; }
+      size_ = v.size_;
+      capacity_ = v.capacity_;
+      arrPtr_ = v.arrPtr_;
+      v.size_ = 0;
+      v.capacity_ = 0;
+      v.arrPtr_ = nullptr;
+    }
+    return *this;
+  }
 
   // Vector Element access
   reference at(size_type pos) {
