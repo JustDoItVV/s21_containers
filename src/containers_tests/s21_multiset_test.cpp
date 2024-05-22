@@ -14,7 +14,7 @@ class Point {
   double x_, y_;
 };
 
-TEST(multiset, MemberFunctionDefaultConstructor) {
+TEST(multiset, constructorDefault) {
   EXPECT_NO_THROW(s21::multiset<int>());
   EXPECT_NO_THROW(s21::multiset<char>());
   EXPECT_NO_THROW(s21::multiset<double>());
@@ -22,14 +22,14 @@ TEST(multiset, MemberFunctionDefaultConstructor) {
   EXPECT_NO_THROW(s21::multiset<Point>());
 }
 
-TEST(multiset, MemberFunctionInitializerListConstructor) {
+TEST(multiset, constructorInitializerList) {
   EXPECT_NO_THROW(s21::multiset<int>({0, 1, 2, 3, 3, 4, 2, 1}));
   EXPECT_NO_THROW(s21::multiset<char>({'1', 'a', '[', '\n'}));
   EXPECT_NO_THROW(s21::multiset<double>({12.34, 56.78, 0, -346.76}));
   EXPECT_NO_THROW(s21::multiset<Point>({Point(1, 2), Point(12, 4), Point()}));
 }
 
-TEST(multiset, MemberFunctionCopyConstructor) {
+TEST(multiset, constructorCopy) {
   s21::multiset<int> multiset_int({0, 1, 2, 3, 3, 2, 1, 2, 3});
   s21::multiset<int> multiset_other_int = multiset_int;
   s21::multiset<int>::iterator it_multiset_int = multiset_int.begin(),
@@ -84,7 +84,7 @@ TEST(multiset, MemberFunctionCopyConstructor) {
   EXPECT_EQ(it_multiset_other_point, multiset_other_point.end());
 }
 
-TEST(multiset, MemberFunctionMoveConstructor) {
+TEST(multiset, constructorMove) {
   s21::multiset<int> multiset_int({0, 1, 2, 3, 3, 2, 1, 2, 3});
   s21::multiset<int> multiset_int_tmp = multiset_int;
   s21::multiset<int> multiset_other_int = std::move(multiset_int_tmp);
@@ -142,7 +142,7 @@ TEST(multiset, MemberFunctionMoveConstructor) {
   EXPECT_EQ(it_multiset_other_point, multiset_other_point.end());
 }
 
-TEST(multiset, CapacityEmpty) {
+TEST(multiset, capacityEmpty) {
   EXPECT_EQ((s21::multiset<int>()).empty(), true);
   EXPECT_EQ((s21::multiset<char>()).empty(), true);
   EXPECT_EQ((s21::multiset<double>()).empty(), true);
@@ -158,7 +158,7 @@ TEST(multiset, CapacityEmpty) {
       false);
 }
 
-TEST(multiset, CapacitySize) {
+TEST(multiset, capacitySize) {
   EXPECT_EQ((s21::multiset<int>()).size(), (s21::multiset<int>::size_type)0);
   EXPECT_EQ((s21::multiset<char>()).size(), (s21::multiset<char>::size_type)0);
   EXPECT_EQ((s21::multiset<double>()).size(),
@@ -178,7 +178,7 @@ TEST(multiset, CapacitySize) {
             (s21::multiset<Point>::size_type)3);
 }
 
-TEST(multiset, ModifiersClear) {
+TEST(multiset, modifiersClear) {
   s21::multiset<int> multiset_int;
   multiset_int.clear();
   EXPECT_EQ(multiset_int.empty(), true);
@@ -196,7 +196,7 @@ TEST(multiset, ModifiersClear) {
   EXPECT_EQ(multiset_point.empty(), true);
 }
 
-TEST(multiset, ModifiersInsert) {
+TEST(multiset, modifiersInsert) {
   for (int i = 0; i < 100; ++i) {
     int q, n = rand() % 20 + 1;
     s21::multiset<int> test;
@@ -222,7 +222,7 @@ TEST(multiset, ModifiersInsert) {
   }
 }
 
-TEST(multiset, ModifiersErase) {
+TEST(multiset, modifiersErase) {
   for (int i = 0; i < 100; ++i) {
     int n = rand() % 20 + 1, q;
     s21::multiset<int> test;
@@ -272,7 +272,7 @@ TEST(multiset, ModifiersErase) {
   }
 }
 
-TEST(multiset, ModifiersSwap) {
+TEST(multiset, modifiersSwap) {
   s21::multiset<int> multiset_int({0, 1, 2, 3});
   s21::multiset<int> multiset_copy_int = multiset_int;
   s21::multiset<int> multiset_other_int({0, 4, 45, 23, 54});
@@ -367,7 +367,7 @@ TEST(multiset, ModifiersSwap) {
   }
 }
 
-TEST(multiset, ModifiersMerge) {
+TEST(multiset, modifiersMerge) {
   for (int i = 0; i < 100; ++i) {
     int n, q;
     s21::multiset<int> test1, test2;
@@ -409,7 +409,7 @@ TEST(multiset, ModifiersMerge) {
   }
 }
 
-TEST(multiset, LookupCountFindContains) {
+TEST(multiset, lookupCountFindContains) {
   for (int i = 0; i < 100; ++i) {
     int q, n = rand() % 20 + 1;
     s21::multiset<int> test;
@@ -448,7 +448,7 @@ TEST(multiset, LookupCountFindContains) {
   }
 }
 
-TEST(multiset, LookupBounds) {
+TEST(multiset, lookupBounds) {
   for (int i = 0; i < 1000; ++i) {
     s21::multiset<int> test;
     std::multiset<int> check;
