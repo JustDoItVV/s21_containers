@@ -16,7 +16,7 @@ class Point {
   double x_, y_;
 };
 
-TEST(queue, DefaultConstructor) {
+TEST(queue, constructorDefault) {
   EXPECT_NO_THROW(s21::queue<int>());
   EXPECT_NO_THROW(s21::queue<char>());
   EXPECT_NO_THROW(s21::queue<double>());
@@ -24,14 +24,14 @@ TEST(queue, DefaultConstructor) {
   EXPECT_NO_THROW(s21::queue<Point>());
 }
 
-TEST(queue, ConstructorInitializer) {
+TEST(queue, constructorInitializer) {
   EXPECT_NO_THROW(s21::queue<int>({0, 1, 2, 3, 3, 4, 2, 1}));
   EXPECT_NO_THROW(s21::queue<char>({'1', 'a', '[', '\n'}));
   EXPECT_NO_THROW(s21::queue<double>({12.34, 56.78, 0, -346.76}));
   EXPECT_NO_THROW(s21::queue<Point>({Point(1, 2), Point(12, 4), Point()}));
 }
 
-TEST(queue, CopyConstructor) {
+TEST(queue, constructorCopy) {
   s21::queue<int> queue_int({0, 1, 2, 3});
   EXPECT_NO_THROW(s21::queue<int> queue_other_int = queue_int);
 
@@ -45,7 +45,7 @@ TEST(queue, CopyConstructor) {
   EXPECT_NO_THROW(s21::queue<Point> queue_other_point = queue_point);
 }
 
-TEST(queue, MoveConstructor) {
+TEST(queue, constructorMove) {
   s21::queue<int> queue_int({0, 1, 2, 3});
   EXPECT_NO_THROW(s21::queue<int> queue_other_int = std::move(queue_int));
 
@@ -60,7 +60,7 @@ TEST(queue, MoveConstructor) {
   EXPECT_NO_THROW(s21::queue<Point> queue_other_point = std::move(queue_point));
 }
 
-TEST(queue, CapacityEmpty) {
+TEST(queue, capacityEmpty) {
   EXPECT_EQ((s21::queue<int>()).empty(), true);
   EXPECT_EQ((s21::queue<char>()).empty(), true);
   EXPECT_EQ((s21::queue<double>()).empty(), true);
@@ -75,7 +75,7 @@ TEST(queue, CapacityEmpty) {
             false);
 }
 
-TEST(queue, CapacitySize) {
+TEST(queue, capacitySize) {
   EXPECT_EQ((s21::queue<int>()).size(), (s21::queue<int>::size_type)0);
   EXPECT_EQ((s21::queue<char>()).size(), (s21::queue<char>::size_type)0);
   EXPECT_EQ((s21::queue<double>()).size(), (s21::queue<double>::size_type)0);
@@ -95,7 +95,7 @@ TEST(queue, CapacitySize) {
             (s21::queue<Point>::size_type)3);
 }
 
-TEST(queue, PushPopSwap) {
+TEST(queue, modifiersPushPopSwap) {
   for (int i = 0; i < 100; ++i) {
     int q;
     s21::queue<int> test, test_other;
