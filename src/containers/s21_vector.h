@@ -57,8 +57,10 @@ class vector {
   }
 
   vector operator=(vector &&v) {
-    if(this != &v) {
-      if(arrPtr_) { delete[] arrPtr_; }
+    if (this != &v) {
+      if (arrPtr_) {
+        delete[] arrPtr_;
+      }
       size_ = v.size_;
       capacity_ = v.capacity_;
       arrPtr_ = v.arrPtr_;
