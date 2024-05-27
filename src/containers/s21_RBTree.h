@@ -25,6 +25,7 @@ class RBTree {
   enum NodeColor { BLACK, RED };
 
   struct Node {
+    key_type key;
     value_type value;
     Node *left, *parent, *right;
     enum NodeColor color;
@@ -49,8 +50,8 @@ class RBTree {
   void erase(iterator pos);
   void swap(RBTree &other);
   void merge(RBTree &other);
-  iterator find(const value_type &value);
-  bool contains(const value_type &value);
+  iterator find(const key_type &key);
+  bool contains(const key_type &key);
   void visualize(Node *root = nullptr);
 
   class Iterator {
@@ -83,11 +84,10 @@ class RBTree {
 
  protected:
   Node *root;
-
   enum Direction { LEFT, RIGHT };
 
   Node *copy(Node *node, Node *parent);
-  Node *search(Node *node, value_type value);
+  Node *search(Node *node, key_type key);
   void rotate(Node *node, Direction dir);
   std::pair<Node *, bool> insertNode(Node *node);
   void fixInsertion(Node *node);
@@ -96,7 +96,7 @@ class RBTree {
   void replaceNode(Node *node, Node *target);
   static Node *findMin(Node *node);
   static Node *findMax(Node *node);
-  Node *findNode(Node *node, value_type value);
+  Node *findNode(Node *node, key_type key);
   size_type calculateSize(Node *node);
   void destroy(Node *node);
 };
@@ -199,10 +199,12 @@ void RBTree<Key, Value>::clear() {
   root = nullptr;
 }
 
+// TODO: перенести реализацию в каждый отдельный контейнер
 template <typename Key, typename Value>
 typename std::pair<typename RBTree<Key, Value>::iterator, bool>
 RBTree<Key, Value>::insert(const value_type &value) {
   Node *node = new Node();
+  node->key = value;
   node->value = value;
 
   std::pair<Node *, bool> inserResult = insertNode(node);
@@ -239,14 +241,14 @@ void RBTree<Key, Value>::merge(RBTree &other) {
 
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::iterator RBTree<Key, Value>::find(
-    const value_type &value) {
-  Node *node = findNode(root, value);
+    const key_type &key) {
+  Node *node = findNode(root, key);
   return Iterator(node);
 }
 
 template <typename Key, typename Value>
-bool RBTree<Key, Value>::contains(const value_type &value) {
-  Node *node = findNode(root, value);
+bool RBTree<Key, Value>::contains(const key_type &key) {
+  Node *node = findNode(root, key);
   return node != nullptr;
 }
 
@@ -360,13 +362,13 @@ bool RBTree<Key, Value>::Iterator::operator!=(
  * *************************/
 
 template <typename Key, typename Value>
-typename RBTree<Key, Value>::Node *RBTree<Key, Value>::search(
-    Node *node, value_type value) {
-  if (node == nullptr || value == node->value) return node;
-  if (value < node->value)
-    return search(node->left, value);
+typename RBTree<Key, Value>::Node *RBTree<Key, Value>::search(Node *node,
+                                                              key_type key) {
+  if (node == nullptr || key == node->key) return node;
+  if (key < node->key)
+    return search(node->left, key);
   else
-    return search(node->right, value);
+    return search(node->right, key);
 }
 
 template <typename Key, typename Value>
@@ -404,9 +406,9 @@ RBTree<Key, Value>::insertNode(Node *node) {
 
   while (root != nullptr) {
     parent = root;
-    if (node->value == root->value)
+    if (node->key == root->key)
       return std::pair<Node *, bool>(root, false);
-    else if (node->value < root->value)
+    else if (node->key < root->key)
       root = root->left;
     else
       root = root->right;
@@ -414,7 +416,7 @@ RBTree<Key, Value>::insertNode(Node *node) {
 
   if (parent == nullptr)
     this->root = node;
-  else if (node->value < parent->value)
+  else if (node->key < parent->key)
     parent->left = node;
   else
     parent->right = node;
@@ -589,14 +591,14 @@ typename RBTree<Key, Value>::Node *RBTree<Key, Value>::findMax(Node *node) {
 }
 
 template <typename Key, typename Value>
-typename RBTree<Key, Value>::Node *RBTree<Key, Value>::findNode(
-    Node *node, value_type value) {
-  if (node == nullptr || node->value == value) return node;
+typename RBTree<Key, Value>::Node *RBTree<Key, Value>::findNode(Node *node,
+                                                                key_type key) {
+  if (node == nullptr || node->key == key) return node;
 
-  if (value < node->value)
-    return findNode(node->left, value);
+  if (key < node->key)
+    return findNode(node->left, key);
   else
-    return findNode(node->right, value);
+    return findNode(node->right, key);
 }
 
 template <typename Key, typename Value>
