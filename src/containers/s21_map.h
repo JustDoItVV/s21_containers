@@ -7,7 +7,6 @@ namespace s21 {
 template <typename Key, typename T>
 class map : public RBTree<Key, T> {
  public:
-  using Node = typename RBTree<Key, T>::Node;
   // Member types
   using key_type = Key;
   using mapped_type = T;
@@ -17,6 +16,7 @@ class map : public RBTree<Key, T> {
   using iterator = typename RBTree<Key, T>::Iterator;
   using const_iterator = typename RBTree<Key, T>::ConstIterator;
   using size_type = size_t;
+  using Node = typename RBTree<Key, T>::Node;
 
   // Member functions
   map() : RBTree<Key, T>(){};
@@ -29,7 +29,6 @@ class map : public RBTree<Key, T> {
   // Element access
   T &at(const Key &key);
   T &operator[](const Key &key);
-  // TODO: оператор разыменовывания должен возвращать пару(ключ,значение)?
 
   // Modifiers
   std::pair<iterator, bool> insert(const value_type &value);

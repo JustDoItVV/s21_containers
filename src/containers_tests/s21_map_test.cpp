@@ -153,9 +153,7 @@ TEST(map, size) {
 
 TEST(map, max_size) {
   s21::map<int, int> s21Map;
-
-  auto maxSize = s21Map.max_size();  // TODO: установить max_size?
-
+  auto maxSize = s21Map.max_size();
   EXPECT_GT(maxSize, 0);
 }
 
@@ -199,8 +197,6 @@ TEST(map, insert) {
   s21::map<int, int> s21Map{{2, 2}, {3, 3}, {5, 5}};
   std::map<int, int> stlMap{{2, 2}, {3, 3}, {5, 5}};
 
-  //В стандартной либе нет функции вставки по параметрам (ключ,значение),
-  //использую вставку парой
   auto s21InsertResult = s21Map.insert(6, 6);
   auto stlInsertResult = stlMap.insert({6, 6});
   EXPECT_TRUE(s21InsertResult.second == stlInsertResult.second);
@@ -278,7 +274,7 @@ TEST(map, merge) {
   EXPECT_EQ(s21MergeMap.size(), stlMergeMap.size());
 }
 
-TEST(map, map) {
+TEST(map, contains) {
   s21::map<int, int> s21Map{{1, 1}, {2, 2}, {3, 3}, {5, 5}};
 
   auto isContains1 = s21Map.contains(6);

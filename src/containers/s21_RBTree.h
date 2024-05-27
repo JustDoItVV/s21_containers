@@ -46,8 +46,7 @@ class RBTree {
   size_type size();
   size_type max_size();
   void clear();
-  std::pair<iterator, bool> insert(
-      const value_type &value);  // TODO: мб сделать virtual?
+  std::pair<iterator, bool> insert(const value_type &value);
   void erase(iterator pos);
   void swap(RBTree &other);
   void merge(RBTree &other);
@@ -83,19 +82,16 @@ class RBTree {
     const_reference operator*();
   };
 
-  // TODO: вынес из protected так как используетс в функциях наследуемого
-  // класса, вероятно надо сделать иначе?
-  Node *root;
-  std::pair<Node *, bool> insertNode(Node *node);
-  void deleteNode(Node *node);
-  Node *search(Node *node, key_type key);
-
  protected:
+  Node *root;
   enum Direction { LEFT, RIGHT };
 
   Node *copy(Node *node, Node *parent);
+  Node *search(Node *node, key_type key);
   void rotate(Node *node, Direction dir);
+  std::pair<Node *, bool> insertNode(Node *node);
   void fixInsertion(Node *node);
+  void deleteNode(Node *node);
   void fixDeletion(Node *node);
   void replaceNode(Node *node, Node *target);
   static Node *findMin(Node *node);
@@ -122,9 +118,7 @@ RBTree<Key, Value>::RBTree() : root(nullptr) {}
 
 template <typename Key, typename Value>
 RBTree<Key, Value>::RBTree(std::initializer_list<value_type> const &items) {
-  for (value_type value : items)
-    insert(value);  // FIXME: под вопросом, вероятно тоже стоит перенести
-                    // реализацию в каждый отдельный контейнер
+  for (value_type value : items) insert(value);
 }
 
 template <typename Key, typename Value>
