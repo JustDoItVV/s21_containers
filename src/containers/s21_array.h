@@ -10,7 +10,7 @@ namespace s21 {
 template <typename T, size_t N>
 class array {
  public:
-  friend ArrayIterator<T>;
+  friend ArrayIterator<T, N>;
   // Member type
   using value_type = T;
   using reference = value_type &;
@@ -50,22 +50,24 @@ class array {
  private:
   value_type data_[N];
   size_type size_ = N;
+  ArrayIterator<T, N> iter_;
 };
 
 template <typename T, size_t N>
-array<T, N>::array() {
-  for (int i = 0; i < N; i++) data_[i] = T();
+array<T, N>::array()
+    : iter_(typename ArrayIterator<T, N>::ArrayIterator(&(data_[0]))) {
+  for (size_t i = 0; i < N; i++) data_[i] = T();
 };
 
 //Не используется класс итератора ввиду несоответствия со спецификацией
 template <typename T, size_t N>
 typename array<T, N>::iterator array<T, N>::begin() {
-  return &data_[0];
+  return iter_.begin();
 };
 
 template <typename T, size_t N>
 typename array<T, N>::iterator array<T, N>::end() {
-  return &data_[N];
+  return iter_.end();
 };
 
 }  // namespace s21
