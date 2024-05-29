@@ -1,0 +1,78 @@
+#ifndef __S21_CONTAINERS_ARRAY_H__
+#define __S21_CONTAINERS_ARRAY_H__
+
+#include <iostream>
+#include <utility>
+
+#include "s21_iterator.h"
+
+namespace s21 {
+template <typename T, size_t N>
+class array {
+ public:
+  friend ArrayIterator<T, N>;
+  // Member type
+  using value_type = T;
+  using reference = value_type &;
+  using const_reference = const reference;
+  using iterator = value_type *;
+  using cons_iterator = const iterator;
+  using size_type = size_t;
+
+  // Member functions
+  array();
+  array(std::initializer_list<value_type> const &items);
+  array(const array &a) = default;
+  array(array &&a) = default;
+  ~array() = default;
+  array &operator=(array &&a) = default;
+
+  // Element access
+  reference at(size_type pos) { return data_[0]; };
+  reference operator[](size_type pos) { return data_[0]; };
+  const_reference front() { return data_[0]; };
+  const_reference back() { return data_[0]; };
+  iterator data() { return begin(); };
+
+  // Iterators
+  iterator begin();
+  iterator end();
+
+  // Capacity
+  bool empty() { return !size_; };
+  size_type size() { return size_; };
+  size_type max_size() { return size(); };
+
+  // Modifiers
+  void swap(array &other){};
+  void fill(const_reference value){};
+
+ private:
+  value_type data_[N];
+  size_type size_ = N;
+  ArrayIterator<T, N> iter_;
+};
+
+template <typename T, size_t N>
+array<T, N>::array()
+    : iter_(typename ArrayIterator<T, N>::ArrayIterator(&(data_[0]))) {
+  for (size_t i = 0; i < N; i++) data_[i] = T();
+};
+
+template <typename T, size_t N>
+array<T, N>::array(std::initializer_list<value_type> const &items)
+    : iter_(typename ArrayIterator<T, N>::ArrayIterator(&(data_[0]))){};
+
+template <typename T, size_t N>
+typename array<T, N>::iterator array<T, N>::begin() {
+  return iter_.begin();
+};
+
+template <typename T, size_t N>
+typename array<T, N>::iterator array<T, N>::end() {
+  return iter_.end();
+};
+
+}  // namespace s21
+
+#endif

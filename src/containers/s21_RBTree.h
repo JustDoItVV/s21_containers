@@ -199,7 +199,6 @@ void RBTree<Key, Value>::clear() {
   root = nullptr;
 }
 
-// TODO: перенести реализацию в каждый отдельный контейнер
 template <typename Key, typename Value>
 typename std::pair<typename RBTree<Key, Value>::iterator, bool>
 RBTree<Key, Value>::insert(const value_type &value) {
