@@ -22,30 +22,30 @@ class array {
   // Member functions
   array();
   array(std::initializer_list<value_type> const &items);
-  array(const array &a);
-  array(array &&a);
+  array(const array &a) = default;
+  array(array &&a) = default;
   ~array() = default;
-  array &operator=(array &&a);
+  array &operator=(array &&a) = default;
 
   // Element access
-  reference at(size_type pos);
-  reference operator[](size_type pos);
-  const_reference front();
-  const_reference back();
-  iterator data();
+  reference at(size_type pos) { return data_[0]; };
+  reference operator[](size_type pos) { return data_[0]; };
+  const_reference front() { return data_[0]; };
+  const_reference back() { return data_[0]; };
+  iterator data() { return begin(); };
 
   // Iterators
   iterator begin();
   iterator end();
 
   // Capacity
-  bool empty();
-  size_type size();
-  size_type max_size();
+  bool empty() { return !size_; };
+  size_type size() { return size_; };
+  size_type max_size() { return size(); };
 
   // Modifiers
-  void swap(array &other);
-  void fill(const_reference value);
+  void swap(array &other){};
+  void fill(const_reference value){};
 
  private:
   value_type data_[N];
@@ -59,7 +59,10 @@ array<T, N>::array()
   for (size_t i = 0; i < N; i++) data_[i] = T();
 };
 
-//Не используется класс итератора ввиду несоответствия со спецификацией
+template <typename T, size_t N>
+array<T, N>::array(std::initializer_list<value_type> const &items)
+    : iter_(typename ArrayIterator<T, N>::ArrayIterator(&(data_[0]))){};
+
 template <typename T, size_t N>
 typename array<T, N>::iterator array<T, N>::begin() {
   return iter_.begin();
