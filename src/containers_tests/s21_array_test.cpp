@@ -64,6 +64,17 @@ TEST(array, initializerConstructor) {
   }
 }
 
+TEST(array, initializerConstructor2) {
+  s21::array<int, 5> s21Array{1, 2, 3};
+  std::array<int, 5> stlArray{1, 2, 3};
+
+  for (auto s21It = s21Array.begin(), s21End = s21Array.end(),
+            stlIt = stlArray.begin();
+       s21It < s21End; s21It++, stlIt++) {
+    EXPECT_EQ(*s21It, *stlIt);
+  }
+}
+
 TEST(array, copyConstructor) {
   s21::array<int, 5> s21Array{1, 2, 3, 4, 5};
   std::array<int, 5> stlArray{1, 2, 3, 4, 5};
@@ -110,7 +121,7 @@ TEST(array, elementAccess) {
   std::array<int, 5> stlArray{1, 2, 3, 4, 5};
   EXPECT_EQ(s21Array.front(), stlArray.front());
   EXPECT_EQ(s21Array.back(), stlArray.back());
-  EXPECT_EQ(s21Array.data(), stlArray.data());
+  EXPECT_EQ(*s21Array.data(), *stlArray.data());
 }
 
 TEST(array, begin) {
@@ -166,7 +177,7 @@ TEST(array, max_size) {
   const size_t size = 4;
   s21::array<int, size> s21Array{};
   auto maxSize = s21Array.max_size();
-  EXPECT_GT(maxSize, size);
+  EXPECT_EQ(maxSize, size);
 }
 
 TEST(array, swap) {
@@ -176,6 +187,21 @@ TEST(array, swap) {
   s21Array.swap(s21SwapArray);
   EXPECT_EQ(*s21Array.begin(), 4);
   EXPECT_EQ(*s21SwapArray.begin(), 1);
+}
+
+TEST(array, swap2) {
+  s21::array<int, 3> s21Array{1, 2, 3};
+  s21::array<int, 3> s21SwapArray{4, 5, 6};
+  std::array<int, 3> stlArray{1, 2, 3};
+  std::array<int, 3> stlSwapArray{4, 5, 6};
+  auto s21It = s21Array.begin();
+  auto s21ItSwap = s21SwapArray.begin();
+  auto stlIt = stlArray.begin();
+  auto stlItSwap = stlSwapArray.begin();
+  s21Array.swap(s21SwapArray);
+  stlArray.swap(stlSwapArray);
+  EXPECT_EQ(*s21It, *stlIt);
+  EXPECT_EQ(*s21ItSwap, *stlItSwap);
 }
 
 TEST(array, fill) {

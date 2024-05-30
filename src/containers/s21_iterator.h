@@ -5,9 +5,6 @@
 #include <iostream>
 #include <utility>
 
-// TODO: ??Возможно?? сделать базовый класс итераторов с фабричным методом и
-// наследовать ArrayIterator и ListIterator от него
-
 namespace s21 {
 template <typename T, size_t N>
 class ArrayIterator {
@@ -16,8 +13,6 @@ class ArrayIterator {
   using pointer = value_type *;
   using iterator = ArrayIterator<T, N>;
   using reference = value_type &;
-  using difference_type =
-      std::ptrdiff_t;  // TODO: убрать если не будет использоваться
 
   ArrayIterator(pointer ptr) : ptr_(ptr), start_(ptr){};
 
