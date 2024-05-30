@@ -91,6 +91,7 @@ template <typename T, size_t N>
 void array<T, N>::swap(array &other) {
   std::swap(data_, other.data_);
 }
+
 template <typename T, size_t N>
 void array<T, N>::fill(const_reference value) {
   for (size_type i = 0; i < size_; i++) data_[i] = value;
