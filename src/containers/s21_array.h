@@ -28,10 +28,10 @@ class array {
   array &operator=(array &&a) = default;
 
   // Element access
-  reference at(size_type pos) { return data_[0]; };
-  reference operator[](size_type pos) { return data_[0]; };
+  reference at(size_type pos);
+  reference operator[](size_type pos);
   const_reference front() { return data_[0]; };
-  const_reference back() { return data_[0]; };
+  const_reference back() { return data_[N - 1]; };
   iterator data() { return begin(); };
 
   // Iterators
@@ -44,8 +44,8 @@ class array {
   size_type max_size() { return size(); };
 
   // Modifiers
-  void swap(array &other){};
-  void fill(const_reference value){};
+  void swap(array &other);
+  void fill(const_reference value);
 
  private:
   value_type data_[N];
@@ -61,7 +61,21 @@ array<T, N>::array()
 
 template <typename T, size_t N>
 array<T, N>::array(std::initializer_list<value_type> const &items)
-    : iter_(typename ArrayIterator<T, N>::ArrayIterator(&(data_[0]))){};
+    : array<T, N>::array() {
+  auto it = begin();
+  for (auto &item : items) *it++ = item;
+};
+
+template <typename T, size_t N>
+typename array<T, N>::reference array<T, N>::at(size_type pos) {
+  if (pos >= size_) throw std::out_of_range("No such element exists");
+  return data_[pos];
+};
+
+template <typename T, size_t N>
+typename array<T, N>::reference array<T, N>::operator[](size_type pos) {
+  return data_[pos];
+};
 
 template <typename T, size_t N>
 typename array<T, N>::iterator array<T, N>::begin() {
@@ -71,6 +85,16 @@ typename array<T, N>::iterator array<T, N>::begin() {
 template <typename T, size_t N>
 typename array<T, N>::iterator array<T, N>::end() {
   return iter_.end();
+};
+
+template <typename T, size_t N>
+void array<T, N>::swap(array &other) {
+  std::swap(data_, other.data_);
+}
+
+template <typename T, size_t N>
+void array<T, N>::fill(const_reference value) {
+  for (size_type i = 0; i < size_; i++) data_[i] = value;
 };
 
 }  // namespace s21
