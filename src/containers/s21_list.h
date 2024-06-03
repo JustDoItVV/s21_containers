@@ -15,26 +15,26 @@ namespace s21 {
     template <typename U>
     class ListIterator {
       private:
-        typename s21::list<T>::iterator current;
+        typename s21::list<T>::iterator current_;
 
       public:
-        ListIterator(typename s21::list<T>::iterator iter) : current(iter) {}
+        ListIterator(typename s21::list<T>::iterator iter) : current_(iter) {}
         ListIterator& operator++() {
-            ++current;
+            ++current_;
             return *this;
         }
         ListIterator& operator--() {
-            --current;
+            --current_;
             return *this;
         }
         T& operator*() {
-            return *current;
+            return *current_;
         }
         bool operator==(const ListIterator& other) const {
-            return current == other.current;
+            return current_ == other.current_;
         }
         bool operator!=(const ListIterator& other) const {
-            return current != other.current;
+            return current_ != other.current_;
         }
     };
     template <typename U>
@@ -80,7 +80,7 @@ namespace s21 {
     // list capacity
     bool empty() {return size_ == 0;}
     size_type size() {return size_;}
-    size_type max_size() {return std::numeric_limits<size_type>::max()*0.75;}
+    size_type max_size() {return std::numeric_limits<size_type>::max();}
 
     // list modifiers
     void clear() {
@@ -91,12 +91,77 @@ namespace s21 {
       tail_ = nullptr;
       end_->previous_ = nullptr;
     }
-    iterator insert(iterator pos, const_reference value) {return NULL;}
-    void erase (iterator pos) {}
+    // TODO: зарефакторить insert, вынести в несколько приватных методов
+    iterator insert(iterator pos, const_reference value) {
+      iterator result_iterator = iterator();
+      if (pos.next_ == end_) {
+        if (pos.tail_ == nullptr) {
+          tail_ = new ListNode<value_type>(value);
+          head_ = tail_;
+          result_iterator = iterator(tail_);
+        }
+        else {
+          tail_ = new ListNode<value_type>(value);
+          tail_->previous_->next_ = tail_;
+          result_iterator = iterator(tail_);
+        }
+        tail_->next_ = end_;
+        end_->previous_ = tail_;
+
+      }
+      else if (pos.current_->previous_==nullptr) {
+        head_ = new ListNode<value_type>(value, nullptr, head_);
+        head_->next_->previous = head_;
+        result_iterator = iterator(head_);
+      }
+      else {
+        ListNode<value_type>* new_node = new ListNode<value_type>(value, pos.current_->previous_, pos.current_);
+        new_node->previous_->next_ = new_node;
+        new_node->next_->previous_ = new_node;
+        result_iterator = iterator(new_node);
+      }
+      size_++;
+      return result_iterator;
+    }
+    // TODO: зарефакторить erase, вынести в несколько приватных методов
+    void erase (iterator pos) {
+      if (!empty()) {
+        if (size==1) {
+          head_ = nullptr;
+          tail_ = nullptr;
+          delete end_->previous_;
+          end_ = nullptr;
+        }
+        else {
+          if (pos.current_->previous_==nullptr) {
+            head_ = head_->next_;
+            delete head_->previous_;
+            next_->previous = nullptr;
+          }
+          else if(pos.current_ == end_) {
+            tail_ = tail_->previous_;
+            delete end_->previous_;
+            end_->previous_ = tail_;
+            tail_->next_ = end_;
+          }
+          else {
+            ListNode<value_type>* new_previous_node = current_->previous_;
+            ListNode<value_type>* new_next_node = current_->next_;
+            delete current_;
+            new_previous_node->next_ = new_next_node;
+            new_next_node->previous_ = new_previous_node;
+          }
+        }
+      size_--;
+      }
+    }
     void push_back (const_reference value) {
+      insert(iterator(tail_), value);
     }
     void pop_back() {}
-    void push_front(const_reference value) {}
+    void push_front(const_reference value) {
+      insert(iterator(head_), value);
+    }
     void pop_front() {}
     void swap (list& other) {}
     void merge (list& other) {}
