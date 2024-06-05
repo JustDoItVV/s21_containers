@@ -243,7 +243,12 @@ namespace s21 {
       this->size_ = temp_size_;
     }
     void merge (list& other) {}
-    void splice(const_iterator pos, list& other) {}
+    void splice(const_iterator pos, list& other) {
+      iterator temp = iterator(pos.node_);
+      for (auto iter = other.begin(); iter != other.end(); ++iter) {
+        insert(temp, *iter);
+      }
+    }
     void reverse() {
       auto leftIterator = begin();
       auto rightIterator = end();
@@ -256,8 +261,45 @@ namespace s21 {
           --rightIterator;
       }
     }
-    void unique() {}
-    void sort() {}
+    void unique() {
+      if (!(size_ <= 1)) {
+        auto current = begin();
+        auto next = current;
+        next++;
+        while (next != end()) {
+            if (*current == *next) {
+                erase(next);
+                next = current;
+                next++;
+            } else {
+                current = next;
+                next++;
+            }
+        }
+      }
+    }
+    void sort() {
+      if (!(size_<= 1)) {
+        list* left = new list();
+        list* right = new list();
+        auto current = begin();
+        for (size_t i = 0; i < size_ / 2; i++) {
+            left->push_back(*current);
+            current++;
+        }
+        for (size_t i = size_ / 2; i < size_; i++) {
+            right->push_back(*current);
+            current++;
+        }
+        left->sort();
+        right->sort();
+        clear();
+        merge(*left);
+        merge(*right);
+        delete left;
+        delete right;
+      }
+    }
 
   private:
   pointer head_ = nullptr;
