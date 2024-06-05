@@ -1,27 +1,24 @@
 #ifndef __S21_CONTAINERS_MULTISET_H__
 #define __S21_CONTAINERS_MULTISET_H__
 
-#include <iostream>
-#include <utility>
+#include "s21_RBTree.h"
 
 namespace s21 {
 template <class Key>
-class multiset {
+class multiset : public RBTree<Key, Key> {
  public:
   // Member type
   using key_type = Key;
   using value_type = Key;
   using reference = value_type&;
-  using const_reference = const value_type&;
-  using iterator = value_type*;  // MultisetIterator<T>; or BinaryTree::iterator
-                                 // TODO: понять, что нужно здесь
-  using const_iterator = const value_type*;  // MultisetConstIterator<T>; or
-                                             // BinaryTree::const_iterator
+  using const_reference = const reference;
+  using iterator = typename RBTree<Key, Key>::Iterator;
+  using const_iterator = const iterator;
   using size_type = size_t;
 
  public:
   // Member functions
-  multiset() {}
+  multiset() : RBTree<Key, Key>(){};
   multiset(std::initializer_list<value_type> const& items) {}
   multiset(const multiset& ms) {}
   multiset(multiset&& ms) {}
