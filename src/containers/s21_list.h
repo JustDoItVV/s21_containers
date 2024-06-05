@@ -13,33 +13,6 @@ namespace s21 {
   
   public:
     template <typename U>
-    class ListIterator {
-      private:
-        typename s21::list<T>::iterator current_;
-
-      public:
-        ListIterator(typename s21::list<T>::iterator iter) : current_(iter) {}
-        ListIterator& operator++() {
-            ++current_;
-            return *this;
-        }
-        ListIterator& operator--() {
-            --current_;
-            return *this;
-        }
-        T& operator*() {
-            return *current_;
-        }
-        bool operator==(const ListIterator& other) const {
-            return current_ == other.current_;
-        }
-        bool operator!=(const ListIterator& other) const {
-            return current_ != other.current_;
-        }
-    };
-    template <typename U>
-    class ListConstIterator{};
-    template <typename U>
     struct  ListNode {
       T value_ = T();
       ListNode* previous_ = nullptr;
@@ -49,6 +22,57 @@ namespace s21 {
           value_(value), previous_(previous), next_(next) {}
     };
 
+    template <typename U>
+    class ListIterator {
+    public:
+        using ListNode = typename s21::list<T>::ListNode<T>*;
+        ListIterator(ListNode node) : current_(node) {}
+        T& operator*() {
+            return current_->value_;
+        }
+        ListIterator& operator++() {
+            current_ = current_->next_;
+            return *this;
+        }
+        ListIterator& operator--() {
+            current_ = current_->previous_;
+            return *this;
+        }
+        bool operator==(const ListIterator& other) const {
+            return current_ == other.current_;
+        }
+        bool operator!=(const ListIterator& other) const {
+            return !(*this == other);
+        }
+    private:
+        ListNode current_;
+    };
+
+    template <typename U>
+    class ListConstIterator {
+    public:
+        using ListNode = const typename s21::list<T>::ListNode<T>*;
+        ListConstIterator(ListNode node) : current_(node) {}
+        const T& operator*() const {
+            return current_->value_;
+        }
+        ListConstIterator& operator++() {
+            current_ = current_->next_;
+            return *this;
+        }
+        ListConstIterator& operator--() {
+            current_ = current_->previous_;
+            return *this;
+        }
+        bool operator==(const ListConstIterator& other) const {
+            return current_ == other.current_;
+        }
+        bool operator!=(const ListConstIterator& other) const {
+            return !(*this == other);
+        }
+    private:
+        ListNode current_;
+    };
 
     
     // list member type
@@ -62,20 +86,65 @@ namespace s21 {
 
     // list functions
     list() : end_(new ListNode(value_type())) {}
-    list(size_type n) {}
-    list(std::initializer_list<value_type> const &items) {}
-    list(const list &l) {}
-    list(list &&l) {}
-    ~list() {}
-    list operator=(list &&l) {}
+    list(size_type n) {
+      for (size_type i = 0; i < n; ++i) {
+          push_back(value_type());
+      }
+    }
+    list(std::initializer_list<value_type> const &items) {
+      for (const auto &item : items) {
+          push_back(item);
+      }
+    }
+    // copy constructor
+    list(const list &l) {
+      for (const auto &item : l) {
+          push_back(item);
+      }
+    }
+    // move constructor
+    list(list &&l) {
+    if (this != &l) {
+        clear();
+        end_ = l.end_;
+        tail_ = l.tail_;
+        head_ = l.head_;
+        size_ = l.size_;
+        l.end_ = nullptr;
+        l.tail_ = nullptr;
+        l.head_ = nullptr;
+        l.size_ = 0;
+      }
+    }
+    // destructor
+    ~list() {
+      clear();
+      delete end_;
+    }
+    list operator=(list &&l) {
+      if (this != &l) {
+          clear();
+          end_ = l.end_;
+          l.end_ = nullptr;
+      }
+      return *this;
+    }
 
     // list element access
-    const_reference front() {}
-    const_reference back() {}
+    const_reference front() {
+      if (!empty()) {
+        return begin()->value;
+      }
+    }
+    const_reference back() {
+      if (!empty()) {
+        return end()->value;
+      }
+    }
 
     // list iterators
-    iterator begin() {return head_;}
-    iterator end() {return end_;}
+    iterator begin() {return iterator(head_);}
+    iterator end() {return iterator(end_);}
 
     // list capacity
     bool empty() {return size_ == 0;}
@@ -126,7 +195,7 @@ namespace s21 {
     // TODO: зарефакторить erase, вынести в несколько приватных методов
     void erase (iterator pos) {
       if (!empty()) {
-        if (size==1) {
+        if (size_==1) {
           head_ = nullptr;
           tail_ = nullptr;
           delete end_->previous_;
@@ -136,7 +205,7 @@ namespace s21 {
           if (pos.current_->previous_==nullptr) {
             head_ = head_->next_;
             delete head_->previous_;
-            next_->previous = nullptr;
+            head_->previous_ = nullptr;
           }
           else if(pos.current_ == end_) {
             tail_ = tail_->previous_;
@@ -145,7 +214,7 @@ namespace s21 {
             tail_->next_ = end_;
           }
           else {
-            ListNode<value_type>* new_previous_node = current_->previous_;
+            ListNode<value_type>* new_previous_node = pos.current_->previous_;
             ListNode<value_type>* new_next_node = current_->next_;
             delete current_;
             new_previous_node->next_ = new_next_node;
@@ -155,18 +224,38 @@ namespace s21 {
       size_--;
       }
     }
-    void push_back (const_reference value) {
-      insert(iterator(tail_), value);
+    void push_back (const_reference value) {insert(end(), value);}
+    void pop_back() {erase(iterator(tail_));}
+    void push_front(const_reference value) {insert(begin(), value);}
+    void pop_front() {erase(iterator(head_));}
+    void swap (list& other) {
+      pointer temp_head_ = other.head_;
+      pointer temp_tail_ = other.tail_;
+      pointer temp_end_ = other.end_;
+      pointer temp_size_ = other.size_;
+      other.head_ = this->head_;
+      other.tail_ = this->tail_;
+      other.end_ = this->end_;
+      other.size_ = this->size_;
+      this->head_ = temp_head_;
+      this->tail_ = temp_tail_;
+      this->end_ = temp_end_;
+      this->size_ = temp_size_;
     }
-    void pop_back() {}
-    void push_front(const_reference value) {
-      insert(iterator(head_), value);
-    }
-    void pop_front() {}
-    void swap (list& other) {}
     void merge (list& other) {}
     void splice(const_iterator pos, list& other) {}
-    void reverse() {}
+    void reverse() {
+      auto leftIterator = begin();
+      auto rightIterator = end();
+      // --rightIterator; - TODO: чекнуть на тестах
+      for (int i = 0; i < size_ / 2; i++) {
+          auto temp = *leftIterator;
+          *leftIterator = *rightIterator;
+          *rightIterator = temp;
+          ++leftIterator;
+          --rightIterator;
+      }
+    }
     void unique() {}
     void sort() {}
 
