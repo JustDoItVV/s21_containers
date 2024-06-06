@@ -44,7 +44,7 @@ class multiset : public RBTree<Key, Key> {
     s21::vector<std::pair<iterator, bool>> ret;
     (ret.push_back(std::pair(insert(std::forward<Args>(args)), true)), ...);
     return ret;
-  };
+  }
 };
 
 template <typename Key>
@@ -133,7 +133,7 @@ void multiset<Key>::merge(multiset& other) {
   iterator it = constTree.begin();
   iterator itEnd = other.end();
 
-  for (; it != itEnd; ++it) iterator insertResult = insert(*it);
+  for (; it != itEnd; ++it) insert(*it);
   other.clear();
 }
 

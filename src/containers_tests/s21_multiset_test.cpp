@@ -213,7 +213,6 @@ TEST(multiset, find) {
   auto s21Iter = s21Multiset.find(3);
   auto stlIter = stlMultiset.find(3);
   auto s21Iter2 = s21Multiset.find(4);
-  auto stlIter2 = stlMultiset.find(4);
 
   EXPECT_EQ(*s21Iter, *stlIter);
   EXPECT_EQ(*s21Iter2, *s21Multiset.end());

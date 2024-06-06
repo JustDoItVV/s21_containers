@@ -235,8 +235,7 @@ void RBTree<Key, Value>::merge(RBTree &other) {
   Iterator it = constTree.begin();
   Iterator itEnd = other.end();
 
-  for (; it != itEnd; ++it)
-    std::pair<Iterator, bool> insertResult = insert(*it);
+  for (; it != itEnd; ++it) insert(*it);
   other.clear();
 }
 

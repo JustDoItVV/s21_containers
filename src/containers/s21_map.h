@@ -40,7 +40,7 @@ class map : public RBTree<Key, T> {
     s21::vector<std::pair<iterator, bool>> ret;
     (ret.push_back(insert(std::forward<Args>(args))), ...);
     return ret;
-  };
+  }
 };
 
 template <typename Key, typename T>

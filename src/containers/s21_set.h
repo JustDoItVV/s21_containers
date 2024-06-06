@@ -28,6 +28,14 @@ class set : public RBTree<Key, Key> {
   };
 
   iterator find(const key_type& key);
+
+  template <typename... Args>
+  s21::vector<std::pair<iterator, bool>> insert_many(Args&&... args) {
+    s21::vector<std::pair<iterator, bool>> ret;
+    (ret.push_back(s21::RBTree<int, int>::insert(std::forward<Args>(args))),
+     ...);
+    return ret;
+  }
 };
 
 template <typename Key>

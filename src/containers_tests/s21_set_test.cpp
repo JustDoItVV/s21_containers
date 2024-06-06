@@ -213,3 +213,15 @@ TEST(set, contains) {
   EXPECT_EQ(isContains1, false);
   EXPECT_EQ(isContains2, true);
 }
+
+TEST(set, insertMany) {
+  s21::set<int> setMy = {};
+  std::set<int> setBase = {2, 3, 4, 5, 6, 7};
+
+  setMy.insert_many(2, 3, 4, 5, 6, 7);
+  auto iterMy = setMy.begin();
+  auto iterBase = setBase.begin();
+  auto iterMyEnd = setMy.end();
+  for (; iterMy != iterMyEnd; ++iterMy, ++iterBase)
+    EXPECT_EQ(*iterMy, *iterBase);
+}
