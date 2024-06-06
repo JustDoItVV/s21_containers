@@ -256,3 +256,16 @@ TEST(multiset, upper_bound) {
   auto stlIter = stlMultiset.upper_bound(3);
   EXPECT_EQ(*s21Iter, *stlIter);
 }
+
+TEST(multitest, insertMany) {
+  s21::multiset<int> s21Multiset{};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  s21Multiset.insert_many(0, 1, 2, 3, 3, 1, 6, 7, 6);
+
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
+  auto s21IterEnd = s21Multiset.end();
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
+}

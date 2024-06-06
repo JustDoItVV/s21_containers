@@ -38,6 +38,13 @@ class multiset : public RBTree<Key, Key> {
   // Additional
   iterator insertNode(Node* node);
   void merge(multiset& other);
+
+  template <typename... Args>
+  s21::vector<std::pair<iterator, bool>> insert_many(Args&&... args) {
+    s21::vector<std::pair<iterator, bool>> ret;
+    (ret.push_back(std::pair(insert(std::forward<Args>(args)), true)), ...);
+    return ret;
+  };
 };
 
 template <typename Key>

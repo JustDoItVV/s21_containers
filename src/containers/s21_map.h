@@ -34,6 +34,13 @@ class map : public RBTree<Key, T> {
   std::pair<iterator, bool> insert(const value_type &value);
   std::pair<iterator, bool> insert(const Key &key, const T &obj);
   std::pair<iterator, bool> insert_or_assign(const Key &key, const T &obj);
+
+  template <typename... Args>
+  s21::vector<std::pair<iterator, bool>> insert_many(Args &&...args) {
+    s21::vector<std::pair<iterator, bool>> ret;
+    (ret.push_back(insert(std::forward<Args>(args))), ...);
+    return ret;
+  };
 };
 
 template <typename Key, typename T>

@@ -5,6 +5,8 @@
 #include <queue>  // replace with s21::queue when it's ready
 #include <utility>
 
+#include "s21_vector.h"
+
 namespace s21 {
 template <typename Key, typename Value>
 class RBTree {
