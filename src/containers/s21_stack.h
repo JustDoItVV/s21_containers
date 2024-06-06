@@ -3,44 +3,51 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <list>
 #include <utility>
-#include <vector>
 
 using namespace std;
 
 namespace s21 {
-template <class Key>
+template <class T>
 class Stack {
  public:
+  using value_type = T;
+  using reference = T &;
+  using const_reference = const T &;
+  using size_type = size_t;
+
   // Member functions
-  Stack() : vect() { vect = vector<Key>(); }
-  Stack(initializer_list<Key> const &items) { vect = vector<Key>(items); }
+  Stack() : l() { l = list<value_type>(); }
+  Stack(initializer_list<value_type> const &items) {
+    l = list<value_type>(items);
+  }
   Stack(const Stack &s) {
-    vect = vector<Key>(s.vect.size());
-    for (size_t i = 0; i < s.vect.size(); i++) {
-      vect[i] = s.vect[i];
+    l = list<value_type>(s.l.size());
+    for (size_t i = 0; i < s.l.size(); i++) {
+      l[i] = s.l[i];
     }
   }
-  Stack(Stack &&s) : vect(std::move(s.vect)) {}
+  Stack(Stack &&s) : l(std::move(s.l)) {}
   Stack &operator=(Stack &&s) {
-    this->vect = std::move(s.vect);
+    this->l = std::move(s.l);
     return *this;
   }
 
   // Element access
-  Key const &top() { return vect.back(); };
+  const_reference top() { return l.back(); };
 
   // SCapacity
-  bool empty() { return vect.empty(); };
-  size_t size() { return vect.size(); };
+  bool empty() { return l.empty(); };
+  size_t size() { return l.size(); };
 
   // Modifiers
-  void push(const Key &value) { this->vect.push_back(value); }
-  void pop() { this->vect.pop_back(); }
-  void swap(Stack &other) { this->vect.swap(other.vect); }
+  void push(const_reference &value) { this->l.push_back(value); }
+  void pop() { this->l.pop_back(); }
+  void swap(Stack &other) { this->l.swap(other.l); }
 
  private:
-  vector<Key> vect;
+  list<value_type> l;
 };
 
 }  // namespace s21
