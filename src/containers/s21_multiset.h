@@ -20,80 +20,115 @@ class multiset : public RBTree<Key, Key> {
  public:
   // Member functions
   multiset() : RBTree<Key, Key>(){};
-  multiset(std::initializer_list<value_type> const& items) {
-    for (value_type value : items) insert(value);
-  }
-  multiset(const multiset& ms) {}
-  multiset(multiset&& ms) {}
-  ~multiset() {}
-  multiset operator=(multiset&& ms) {}
-
-  // Iterators
-  // iterator begin() { return NULL; }
-  // iterator end() { return NULL; }
-
-  // Capacity
-  // bool empty() { return false; }
-  // size_type size() { return 0; }
-  // size_type max_size() { return 0; }
+  multiset(std::initializer_list<value_type> const& items);
+  multiset(const multiset& ms) : RBTree<Key, Key>(ms){};
+  multiset(multiset&& ms) : RBTree<Key, Key>(std::move(ms)){};
+  ~multiset() = default;
+  multiset operator=(multiset&& ms);
 
   // Modifiers
-  // void clear() {}
-  iterator insert(const value_type& value) {
-    Node* node = new Node();
-    node->key = value;
-    node->value = value;
-
-    return insertNode(node);
-  }
-  void merge(multiset& other) {
-    RBTree constTree(other);
-    iterator it = constTree.begin();
-    iterator itEnd = other.end();
-
-    for (; it != itEnd; ++it) iterator insertResult = insert(*it);
-    other.clear();
-  }
-  // void erase(iterator pos) {}
-  // void swap(multiset& other) {}
-  // void merge(multiset& other) {}
+  iterator insert(const value_type& value);
 
   // Lookup - просмотр мультисета
-  size_type count(const Key& key) { return 0; }
-  iterator find(const Key& key) { return NULL; }
-  // bool contains(const Key& key) { return false; }
-  std::pair<iterator, iterator> equal_range(const Key& key) {
-    return std::pair<iterator, iterator>(nullptr, nullptr);
-  }
-  iterator lower_bound(const Key& key) { return NULL; }
-  iterator upper_bound(const Key& key) { return NULL; }
+  size_type count(const Key& key);
+  std::pair<iterator, iterator> equal_range(const Key& key);
+  iterator lower_bound(const Key& key);
+  iterator upper_bound(const Key& key);
 
-  iterator insertNode(Node* node) {
-    Node *parent = nullptr, *root = this->root;
-    node->color = RBTree<Key, Key>::RED;
-
-    while (root != nullptr) {
-      parent = root;
-      if (node->key < root->key)
-        root = root->left;
-      else
-        root = root->right;
-    };
-
-    if (parent == nullptr)
-      this->root = node;
-    else if (node->key < parent->key)
-      parent->left = node;
-    else
-      parent->right = node;
-
-    node->parent = parent;
-
-    RBTree<Key, Key>::fixInsertion(node);
-
-    return node;
-  };
+  // Additional
+  iterator insertNode(Node* node);
+  void merge(multiset& other);
 };
+
+template <typename Key>
+multiset<Key>::multiset(std::initializer_list<value_type> const& items) {
+  for (value_type value : items) insert(value);
+};
+
+template <typename Key>
+multiset<Key> multiset<Key>::operator=(multiset&& ms) {
+  RBTree<Key, Key>::operator=(std::move(ms));
+  return *this;
+};
+
+template <typename Key>
+typename multiset<Key>::iterator multiset<Key>::insert(
+    const value_type& value) {
+  Node* node = new Node();
+  node->key = value;
+  node->value = value;
+
+  return insertNode(node);
+};
+
+template <typename Key>
+typename multiset<Key>::size_type multiset<Key>::count(const Key& key) {
+  auto it = RBTree<Key, Key>::begin();
+  auto end = RBTree<Key, Key>::end();
+  size_type count = 0;
+  while (it != end && *it != key) it++;
+  while (it != end && *it++ == key) count++;
+  return count;
+};
+
+template <typename Key>
+std::pair<typename multiset<Key>::iterator, typename multiset<Key>::iterator>
+multiset<Key>::equal_range(const Key& key) {
+  return std::pair<iterator, iterator>(lower_bound(key), upper_bound(key));
+};
+
+template <typename Key>
+typename multiset<Key>::iterator multiset<Key>::lower_bound(const Key& key) {
+  auto start = RBTree<Key, Key>::begin();
+  auto end = RBTree<Key, Key>::end();
+  while (start != end && *start != key) start++;
+  return start;
+};
+
+template <typename Key>
+typename multiset<Key>::iterator multiset<Key>::upper_bound(const Key& key) {
+  auto it = lower_bound(key);
+  auto end = RBTree<Key, Key>::end();
+  while (it != end && *it++ == key) it++;
+  return it;
+};
+
+template <typename Key>
+typename multiset<Key>::iterator multiset<Key>::insertNode(Node* node) {
+  Node *parent = nullptr, *root = this->root;
+  node->color = RBTree<Key, Key>::RED;
+
+  while (root != nullptr) {
+    parent = root;
+    if (node->key < root->key)
+      root = root->left;
+    else
+      root = root->right;
+  };
+
+  if (parent == nullptr)
+    this->root = node;
+  else if (node->key < parent->key)
+    parent->left = node;
+  else
+    parent->right = node;
+
+  node->parent = parent;
+
+  RBTree<Key, Key>::fixInsertion(node);
+
+  return node;
+};
+
+template <typename Key>
+void multiset<Key>::merge(multiset& other) {
+  RBTree constTree(other);
+  iterator it = constTree.begin();
+  iterator itEnd = other.end();
+
+  for (; it != itEnd; ++it) iterator insertResult = insert(*it);
+  other.clear();
+}
 
 };  // namespace s21
 
