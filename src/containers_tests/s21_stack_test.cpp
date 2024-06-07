@@ -1,45 +1,43 @@
-#include "s21_stack.h"
-
-#include <gtest/gtest.h>
-
 #include <stack>
 
+#include "../s21_containers_test.h"
+
 namespace {
-TEST(Stack, сonstructorDefault) {
-  s21::Stack<int> s21_stack;
+TEST(stack, сonstructorDefault) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
 
   EXPECT_EQ(s21_stack.size(), std_stack.size());
   EXPECT_EQ(s21_stack.empty(), std_stack.empty());
 }
 
-TEST(Stack, сonstructorInitializeList) {
-  s21::Stack<char> s21_stack_1 = {1, 2, 3, 4};
+TEST(stack, сonstructorInitializeList) {
+  s21::stack<char> s21_stack_1 = {1, 2, 3, 4};
   for (int i = 4; i > 0; i--) {
     EXPECT_EQ(s21_stack_1.top(), i);
     s21_stack_1.pop();
   }
 }
 
-TEST(Stack, constructorCopy) {
-  s21::Stack<char> s21_stack_1 = {'a', 'b', 'c', 'd'};
-  s21::Stack<char> s21_stack_2 = s21_stack_1;
+TEST(stack, constructorCopy) {
+  s21::stack<char> s21_stack_1 = {'a', 'b', 'c', 'd'};
+  s21::stack<char> s21_stack_2 = s21_stack_1;
 
   EXPECT_EQ(s21_stack_1.size(), s21_stack_2.size());
   EXPECT_EQ(s21_stack_1.size(), 4);
   EXPECT_EQ(s21_stack_1.top(), s21_stack_2.top());
 }
 
-TEST(Stack, sizeAndTopAfterCopy) {
-  s21::Stack<char> s21_stack_1 = {'a', 'b', 'c', 'd'};
-  s21::Stack<char> s21_stack_2 = s21_stack_1;
+TEST(stack, sizeAndTopAfterCopy) {
+  s21::stack<char> s21_stack_1 = {'a', 'b', 'c', 'd'};
+  s21::stack<char> s21_stack_2 = s21_stack_1;
 
   EXPECT_EQ(s21_stack_1.size(), 4);
   EXPECT_EQ(s21_stack_1.top(), 'd');
 }
 
-TEST(Stack, popOperations) {
-  s21::Stack<char> s21_stack_1 = {'a', 'b', 'c', 'd'};
+TEST(stack, popOperations) {
+  s21::stack<char> s21_stack_1 = {'a', 'b', 'c', 'd'};
 
   s21_stack_1.pop();
   EXPECT_EQ(s21_stack_1.top(), 'c');
@@ -49,9 +47,9 @@ TEST(Stack, popOperations) {
   EXPECT_EQ(s21_stack_1.top(), 'a');
 }
 
-TEST(Stack, moveConstructor) {
-  s21::Stack<int> s1 = {1, 2, 3, 4};
-  s21::Stack<int> s2(std::move(s1));
+TEST(stack, moveConstructor) {
+  s21::stack<int> s1 = {1, 2, 3, 4};
+  s21::stack<int> s2(std::move(s1));
 
   EXPECT_TRUE(s1.empty());
   EXPECT_EQ(s2.size(), 4);
@@ -60,9 +58,9 @@ TEST(Stack, moveConstructor) {
   EXPECT_EQ(s2.top(), 3);
 }
 
-TEST(Stack, moveAssignment) {
-  s21::Stack<int> s1 = {1, 2, 3, 4};
-  s21::Stack<int> s2 = {5, 6};
+TEST(stack, moveAssignment) {
+  s21::stack<int> s1 = {1, 2, 3, 4};
+  s21::stack<int> s2 = {5, 6};
   s2 = std::move(s1);
 
   EXPECT_TRUE(s1.empty());
@@ -72,8 +70,8 @@ TEST(Stack, moveAssignment) {
   EXPECT_EQ(s2.top(), 3);
 }
 
-TEST(Stack, pushTop) {
-  s21::Stack<int> s21_stack;
+TEST(stack, pushTop) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
   s21_stack.push(5);
   s21_stack.push(0);
@@ -83,8 +81,8 @@ TEST(Stack, pushTop) {
   EXPECT_EQ(s21_stack.top(), std_stack.top());
 }
 
-TEST(Stack, pushSize) {
-  s21::Stack<int> s21_stack;
+TEST(stack, pushSize) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
   s21_stack.push(5);
   s21_stack.push(0);
@@ -94,8 +92,8 @@ TEST(Stack, pushSize) {
   EXPECT_EQ(s21_stack.size(), std_stack.size());
 }
 
-TEST(Stack, pushEmptyState) {
-  s21::Stack<int> s21_stack;
+TEST(stack, pushEmptyState) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
   s21_stack.push(5);
   s21_stack.push(0);
@@ -105,8 +103,8 @@ TEST(Stack, pushEmptyState) {
   EXPECT_EQ(s21_stack.empty(), std_stack.empty());
 }
 
-TEST(Stack, popAfterInitialPush) {
-  s21::Stack<int> s21_stack;
+TEST(stack, popAfterInitialPush) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
   s21_stack.push(5);
   s21_stack.push(0);
@@ -121,8 +119,8 @@ TEST(Stack, popAfterInitialPush) {
   EXPECT_EQ(s21_stack.empty(), std_stack.empty());
 }
 
-TEST(Stack, popAfterPushAndPop) {
-  s21::Stack<int> s21_stack;
+TEST(stack, popAfterPushAndPop) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
   s21_stack.push(5);
   s21_stack.push(0);
@@ -137,8 +135,8 @@ TEST(Stack, popAfterPushAndPop) {
   EXPECT_TRUE(std_stack.empty());
 }
 
-TEST(Stack, popAfterRepush) {
-  s21::Stack<int> s21_stack;
+TEST(stack, popAfterRepush) {
+  s21::stack<int> s21_stack;
   std::stack<int> std_stack;
   s21_stack.push(5);
   s21_stack.push(0);
@@ -160,31 +158,31 @@ TEST(Stack, popAfterRepush) {
   EXPECT_EQ(s21_stack.empty(), std_stack.empty());
 }
 
-TEST(Stack, initialState) {
-  s21::Stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
-  s21::Stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
-  s21::Stack<std::string> s21_stack_3 = {"The", "sun", "Is", "Far", "Away"};
-  s21::Stack<std::string> s21_stack_4 = {"It", "Goes", "In", "Circles"};
+TEST(stack, initialState) {
+  s21::stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
+  s21::stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
+  s21::stack<std::string> s21_stack_3 = {"The", "sun", "Is", "Far", "Away"};
+  s21::stack<std::string> s21_stack_4 = {"It", "Goes", "In", "Circles"};
 
   EXPECT_EQ(s21_stack_1.size(), s21_stack_3.size());
   EXPECT_EQ(s21_stack_2.size(), s21_stack_4.size());
 }
 
-TEST(Stack, swapOperation) {
-  s21::Stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
-  s21::Stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
-  s21::Stack<std::string> s21_stack_3 = {"The", "sun", "Is", "Far", "Away"};
-  s21::Stack<std::string> s21_stack_4 = {"It", "Goes", "In", "Circles"};
+TEST(stack, swapOperation) {
+  s21::stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
+  s21::stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
+  s21::stack<std::string> s21_stack_3 = {"The", "sun", "Is", "Far", "Away"};
+  s21::stack<std::string> s21_stack_4 = {"It", "Goes", "In", "Circles"};
 
   s21_stack_1.swap(s21_stack_2);
 
   EXPECT_EQ(s21_stack_1.size(), s21_stack_4.size());
   EXPECT_EQ(s21_stack_2.size(), s21_stack_3.size());
 }
-TEST(Stack, swapAndPopOperationStack1) {
-  s21::Stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
-  s21::Stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
-  s21::Stack<std::string> s21_stack_4 = {"It", "Goes", "In", "Circles"};
+TEST(stack, swapAndPopOperationstack1) {
+  s21::stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
+  s21::stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
+  s21::stack<std::string> s21_stack_4 = {"It", "Goes", "In", "Circles"};
 
   s21_stack_1.swap(s21_stack_2);
 
@@ -195,10 +193,10 @@ TEST(Stack, swapAndPopOperationStack1) {
   }
 }
 
-TEST(Stack, swapAndPopOperationStack2) {
-  s21::Stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
-  s21::Stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
-  s21::Stack<std::string> s21_stack_3 = {"The", "sun", "Is", "Far", "Away"};
+TEST(stack, swapAndPopOperationstack2) {
+  s21::stack<std::string> s21_stack_1 = {"The", "sun", "Is", "Far", "Away"};
+  s21::stack<std::string> s21_stack_2 = {"It", "Goes", "In", "Circles"};
+  s21::stack<std::string> s21_stack_3 = {"The", "sun", "Is", "Far", "Away"};
 
   s21_stack_1.swap(s21_stack_2);
 
