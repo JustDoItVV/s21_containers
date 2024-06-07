@@ -1,500 +1,258 @@
 #include "../s21_containers_test.h"
 
-class Point {
- public:
-  Point(double x = 0, double y = 0) : x_(x), y_(y) {}
-  bool operator<(const Point& other) const {
-    return (x_ * x_ + y_ * y_) < (other.x_ * other.x_ + other.y_ * other.y_);
-  }
-  bool operator==(const Point& other) const {
-    return x_ == other.x_ && y_ == other.y_;
-  }
-
- private:
-  double x_, y_;
-};
-
-TEST(multiset, constructorDefault) {
-  EXPECT_NO_THROW(s21::multiset<int>());
-  EXPECT_NO_THROW(s21::multiset<char>());
-  EXPECT_NO_THROW(s21::multiset<double>());
-  EXPECT_NO_THROW(s21::multiset<s21::list<int>>());
-  EXPECT_NO_THROW(s21::multiset<Point>());
+TEST(multiset, defaultConstructor) {
+  s21::multiset<int> s21IntMultiset;
+  s21::multiset<char> s21CharMultiset;
+  s21::multiset<double> s21DoubleMultiset;
+  std::multiset<int> stlIntMultiset;
+  std::multiset<char> stlCharMultiset;
+  std::multiset<double> stlDoubleMultiset;
+  EXPECT_EQ(s21IntMultiset.empty(), stlIntMultiset.empty());
+  EXPECT_EQ(s21CharMultiset.empty(), stlCharMultiset.empty());
+  EXPECT_EQ(s21DoubleMultiset.empty(), stlDoubleMultiset.empty());
 }
 
-TEST(multiset, constructorInitializerList) {
-  EXPECT_NO_THROW(s21::multiset<int>({0, 1, 2, 3, 3, 4, 2, 1}));
-  EXPECT_NO_THROW(s21::multiset<char>({'1', 'a', '[', '\n'}));
-  EXPECT_NO_THROW(s21::multiset<double>({12.34, 56.78, 0, -346.76}));
-  EXPECT_NO_THROW(s21::multiset<Point>({Point(1, 2), Point(12, 4), Point()}));
+TEST(multiset, initializerConstructor1) {
+  s21::multiset<int> s21EmptyMultiset{};
+  std::multiset<int> stlEmptyMultiset{};
+  auto s21Iter = s21EmptyMultiset.begin();
+  auto stlIter = stlEmptyMultiset.begin();
+  auto s21IterEnd = s21EmptyMultiset.end();
+  EXPECT_EQ(s21EmptyMultiset.size(), stlEmptyMultiset.size());
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, constructorCopy) {
-  s21::multiset<int> multiset_int({0, 1, 2, 3, 3, 2, 1, 2, 3});
-  s21::multiset<int> multiset_other_int = multiset_int;
-  s21::multiset<int>::iterator it_multiset_int = multiset_int.begin(),
-                               it_multiset_other_int =
-                                   multiset_other_int.begin();
-  for (; it_multiset_int != multiset_int.end() &&
-         it_multiset_other_int != multiset_other_int.end();
-       ++it_multiset_int, ++it_multiset_other_int) {
-    EXPECT_EQ(*it_multiset_int, *it_multiset_other_int);
-  }
-  EXPECT_EQ(it_multiset_int, multiset_int.end());
-  EXPECT_EQ(it_multiset_other_int, multiset_other_int.end());
-
-  s21::multiset<char> multiset_char({'1', 'a', '[', '\t', '1', '2', '3', 'a'});
-  s21::multiset<char> multiset_other_char = multiset_char;
-  s21::multiset<char>::iterator it_multiset_char = multiset_char.begin(),
-                                it_multiset_other_char =
-                                    multiset_other_char.begin();
-  for (; it_multiset_char != multiset_char.end() &&
-         it_multiset_other_char != multiset_other_char.end();
-       ++it_multiset_char, ++it_multiset_other_char) {
-    EXPECT_EQ(*it_multiset_char, *it_multiset_other_char);
-  }
-  EXPECT_EQ(it_multiset_char, multiset_char.end());
-  EXPECT_EQ(it_multiset_other_char, multiset_other_char.end());
-
-  s21::multiset<double> multiset_double({12.34, 45, 9348.2, 0.0, 23, 0.0});
-  s21::multiset<double> multiset_other_double = multiset_double;
-  s21::multiset<double>::iterator it_multiset_double = multiset_double.begin(),
-                                  it_multiset_other_double =
-                                      multiset_other_double.begin();
-  for (; it_multiset_double != multiset_double.end() &&
-         it_multiset_other_double != multiset_other_double.end();
-       ++it_multiset_double, ++it_multiset_other_double) {
-    EXPECT_EQ(*it_multiset_double, *it_multiset_other_double);
-  }
-  EXPECT_EQ(it_multiset_double, multiset_double.end());
-  EXPECT_EQ(it_multiset_other_double, multiset_other_double.end());
-
-  s21::multiset<Point> multiset_point(
-      {Point(1, 2), Point(12, 4), Point(), Point(), Point(12, 4), Point(12)});
-  s21::multiset<Point> multiset_other_point = multiset_point;
-  s21::multiset<Point>::iterator it_multiset_point = multiset_point.begin(),
-                                 it_multiset_other_point =
-                                     multiset_other_point.begin();
-  for (; it_multiset_point != multiset_point.end() &&
-         it_multiset_other_point != multiset_other_point.end();
-       ++it_multiset_point, ++it_multiset_other_point) {
-    EXPECT_EQ(*it_multiset_point, *it_multiset_other_point);
-  }
-  EXPECT_EQ(it_multiset_point, multiset_point.end());
-  EXPECT_EQ(it_multiset_other_point, multiset_other_point.end());
+TEST(multiset, initializerConstructor2) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 4, 5, 6, 7};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 4, 5, 6, 7};
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
+  auto s21IterEnd = s21Multiset.end();
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, constructorMove) {
-  s21::multiset<int> multiset_int({0, 1, 2, 3, 3, 2, 1, 2, 3});
-  s21::multiset<int> multiset_int_tmp = multiset_int;
-  s21::multiset<int> multiset_other_int = std::move(multiset_int_tmp);
-  s21::multiset<int>::iterator it_multiset_int = multiset_int.begin(),
-                               it_multiset_other_int =
-                                   multiset_other_int.begin();
-  for (; it_multiset_other_int != multiset_other_int.end();
-       ++it_multiset_int, ++it_multiset_other_int) {
-    EXPECT_EQ(*it_multiset_int, *it_multiset_other_int);
-  }
-  EXPECT_EQ(it_multiset_int, multiset_int.end());
-  EXPECT_EQ(it_multiset_other_int, multiset_other_int.end());
-
-  s21::multiset<char> multiset_char({'1', 'a', '[', '\t', '1', '2', '3', 'a'});
-  s21::multiset<char> multiset_char_tmp = multiset_char;
-  s21::multiset<char> multiset_other_char = std::move(multiset_char_tmp);
-  s21::multiset<char>::iterator it_multiset_char = multiset_char.begin(),
-                                it_multiset_other_char =
-                                    multiset_other_char.begin();
-  for (; it_multiset_char != multiset_char.end() &&
-         it_multiset_other_char != multiset_other_char.end();
-       ++it_multiset_char, ++it_multiset_other_char) {
-    EXPECT_EQ(*it_multiset_char, *it_multiset_other_char);
-  }
-  EXPECT_EQ(it_multiset_char, multiset_char.end());
-  EXPECT_EQ(it_multiset_other_char, multiset_other_char.end());
-
-  s21::multiset<double> multiset_double({12.34, 45, 9348.2, 0.0, 23, 0.0});
-  s21::multiset<double> multiset_double_tmp = multiset_double;
-  s21::multiset<double> multiset_other_double = std::move(multiset_double_tmp);
-  s21::multiset<double>::iterator it_multiset_double = multiset_double.begin(),
-                                  it_multiset_other_double =
-                                      multiset_other_double.begin();
-  for (; it_multiset_double != multiset_double.end() &&
-         it_multiset_other_double != multiset_other_double.end();
-       ++it_multiset_double, ++it_multiset_other_double) {
-    EXPECT_EQ(*it_multiset_double, *it_multiset_other_double);
-  }
-  EXPECT_EQ(it_multiset_double, multiset_double.end());
-  EXPECT_EQ(it_multiset_other_double, multiset_other_double.end());
-
-  s21::multiset<Point> multiset_point(
-      {Point(1, 2), Point(12, 4), Point(), Point(), Point(12, 4), Point(12)});
-  s21::multiset<Point> multiset_point_tmp = multiset_point;
-  s21::multiset<Point> multiset_other_point = std::move(multiset_point_tmp);
-  s21::multiset<Point>::iterator it_multiset_point = multiset_point.begin(),
-                                 it_multiset_other_point =
-                                     multiset_other_point.begin();
-  for (; it_multiset_point != multiset_point.end() &&
-         it_multiset_other_point != multiset_other_point.end();
-       ++it_multiset_point, ++it_multiset_other_point) {
-    EXPECT_EQ(*it_multiset_point, *it_multiset_other_point);
-  }
-  EXPECT_EQ(it_multiset_point, multiset_point.end());
-  EXPECT_EQ(it_multiset_other_point, multiset_other_point.end());
+TEST(multiset, initializerConstructor3) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
+  auto s21IterEnd = s21Multiset.end();
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, capacityEmpty) {
-  EXPECT_EQ((s21::multiset<int>()).empty(), true);
-  EXPECT_EQ((s21::multiset<char>()).empty(), true);
-  EXPECT_EQ((s21::multiset<double>()).empty(), true);
-  EXPECT_EQ((s21::multiset<s21::list<int>>()).empty(), true);
-  EXPECT_EQ((s21::multiset<Point>()).empty(), true);
-
-  EXPECT_EQ((s21::multiset<int>({0, 1, 2, 3, 3, 2, 4, 5, 2})).empty(), false);
-  EXPECT_EQ((s21::multiset<char>({'1', 'a', '[', '\n', '1'})).empty(), false);
-  EXPECT_EQ((s21::multiset<double>({12.34, 56.78, 0, -346.76})).empty(), false);
-  EXPECT_EQ(
-      (s21::multiset<Point>({Point(1, 2), Point(12, 4), Point(), Point()}))
-          .empty(),
-      false);
+TEST(multiset, copyConstructor) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  s21::multiset<int> s21MultisetCopy = s21Multiset;
+  std::multiset<int> stlMultisetCopy = stlMultiset;
+  auto s21Iter = s21MultisetCopy.begin();
+  auto stlIter = stlMultisetCopy.begin();
+  auto s21IterEnd = s21MultisetCopy.end();
+  EXPECT_EQ(s21MultisetCopy.size(), stlMultisetCopy.size());
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, capacitySize) {
-  EXPECT_EQ((s21::multiset<int>()).size(), (s21::multiset<int>::size_type)0);
-  EXPECT_EQ((s21::multiset<char>()).size(), (s21::multiset<char>::size_type)0);
-  EXPECT_EQ((s21::multiset<double>()).size(),
-            (s21::multiset<double>::size_type)0);
-  EXPECT_EQ((s21::multiset<s21::list<int>>()).size(),
-            (s21::multiset<s21::list<int>>::size_type)0);
-  EXPECT_EQ((s21::multiset<Point>()).size(),
-            (s21::multiset<Point>::size_type)0);
-
-  EXPECT_EQ((s21::multiset<int>({0, 1, 2, 3})).size(),
-            (s21::multiset<int>::size_type)4);
-  EXPECT_EQ((s21::multiset<char>({'1', 'a', '[', '\n'})).size(),
-            (s21::multiset<char>::size_type)4);
-  EXPECT_EQ((s21::multiset<double>({12.34, 56.78, 0, -346.76})).size(),
-            (s21::multiset<double>::size_type)4);
-  EXPECT_EQ((s21::multiset<Point>({Point(1, 2), Point(12, 4), Point()})).size(),
-            (s21::multiset<Point>::size_type)3);
+TEST(multiset, moveConstructor) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  s21::multiset<int> s21MultisetMove = s21Multiset;
+  std::multiset<int> stlMultisetMove = stlMultiset;
+  auto s21Iter = s21MultisetMove.begin();
+  auto stlIter = stlMultisetMove.begin();
+  auto s21IterEnd = s21MultisetMove.end();
+  EXPECT_EQ(s21MultisetMove.size(), stlMultisetMove.size());
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, modifiersClear) {
-  s21::multiset<int> multiset_int;
-  multiset_int.clear();
-  EXPECT_EQ(multiset_int.empty(), true);
+TEST(multiset, begin) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
 
-  s21::multiset<char> multiset_char({'1', 'a', '[', '\t'});
-  multiset_char.clear();
-  EXPECT_EQ(multiset_char.empty(), true);
-
-  s21::multiset<double> multiset_double({0.0});
-  multiset_double.clear();
-  EXPECT_EQ(multiset_double.empty(), true);
-
-  s21::multiset<Point> multiset_point({Point(1, 2), Point(), Point(12, 43.09)});
-  multiset_point.clear();
-  EXPECT_EQ(multiset_point.empty(), true);
+  EXPECT_EQ(*s21Iter, *stlIter);
+  s21Iter++;
+  stlIter++;
+  EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, modifiersInsert) {
-  for (int i = 0; i < 100; ++i) {
-    int q, n = rand() % 20 + 1;
-    s21::multiset<int> test;
-    std::multiset<int> check;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20;
-      test.insert(q);
-      check.insert(q);
-    }
+TEST(multiset, end) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  auto s21Iter = s21Multiset.end();
+  auto stlIter = stlMultiset.end();
 
-    s21::multiset<int>::iterator it_test = test.begin();
-    std::multiset<int>::iterator it_check = check.begin();
-
-    EXPECT_EQ(test.size(), check.size());
-
-    it_test = test.begin(), it_check = check.begin();
-    for (; it_test != test.end() && it_check != check.end();
-         ++it_test, ++it_check)
-      EXPECT_EQ(*it_test, *it_check);
-
-    EXPECT_EQ(it_test, test.end());
-    EXPECT_EQ(it_check, check.end());
-  }
+  s21Iter--;
+  stlIter--;
+  EXPECT_EQ(*s21Iter, *stlIter);
 }
 
-TEST(multiset, modifiersErase) {
-  for (int i = 0; i < 100; ++i) {
-    int n = rand() % 20 + 1, q;
-    s21::multiset<int> test;
-    std::multiset<int> check;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20 + 1;
-      test.insert(q);
-      check.insert(q);
-    }
-
-    // test.print_tree();
-
-    s21::multiset<int>::iterator it_test;
-    std::multiset<int>::iterator it_check;
-
-    n = rand() % 20 + 1;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20 + 1;
-      EXPECT_EQ(test.contains(q), check.find(q) != check.end());
-      it_test = test.begin(), it_check = check.begin();
-      // for (; it_test != test.end() && it_check != check.end();
-      //    ++it_test, ++it_check)
-      // std::cout << "|" <<  *it_test << " " << *it_check << std::endl;
-      // EXPECT_EQ(*it_test, *it_check);
-
-      if (test.contains(q)) {
-        it_test = test.find(q);
-        test.erase(it_test);
-      }
-      if (check.find(q) != check.end()) {
-        it_check = check.find(q);
-        check.erase(it_check);
-      }
-    }
-    // test.print_tree();
-
-    EXPECT_EQ(test.size(), check.size());
-
-    it_test = test.begin(), it_check = check.begin();
-    for (; it_test != test.end() && it_check != check.end();
-         ++it_test, ++it_check)
-      EXPECT_EQ(*it_test, *it_check);
-
-    EXPECT_EQ(it_test, test.end());
-    EXPECT_EQ(it_check, check.end());
-    // std::cout << "||||||||||||||||||||||||||||||||||||||||\n";
-  }
+TEST(multiset, empty) {
+  s21::multiset<int> s21EmptyMultiset{};
+  std::multiset<int> stlEmptyMultiset{};
+  EXPECT_EQ(s21EmptyMultiset.empty(), stlEmptyMultiset.empty());
 }
 
-TEST(multiset, modifiersSwap) {
-  s21::multiset<int> multiset_int({0, 1, 2, 3});
-  s21::multiset<int> multiset_copy_int = multiset_int;
-  s21::multiset<int> multiset_other_int({0, 4, 45, 23, 54});
-  s21::multiset<int> multiset_other_copy_int = multiset_other_int;
+TEST(multiset, size) {
+  s21::multiset<int> s21Multiset{};
+  std::multiset<int> stlMultiset{};
 
-  multiset_int.swap(multiset_other_int);
-
-  s21::multiset<int>::iterator it_multiset_int = multiset_int.begin(),
-                               it_multiset_other_int =
-                                   multiset_other_copy_int.begin();
-  for (; it_multiset_int != multiset_int.end() &&
-         it_multiset_other_int != multiset_other_copy_int.end();
-       ++it_multiset_int, ++it_multiset_other_int) {
-    EXPECT_EQ(*it_multiset_int, *it_multiset_other_int);
-  }
-  it_multiset_int = multiset_other_int.begin(),
-  it_multiset_other_int = multiset_copy_int.begin();
-  for (; it_multiset_int != multiset_other_int.end() &&
-         it_multiset_other_int != multiset_copy_int.end();
-       ++it_multiset_int, ++it_multiset_other_int) {
-    EXPECT_EQ(*it_multiset_int, *it_multiset_other_int);
-  }
-
-  s21::multiset<char> multiset_char({'s', 'd', 'r', '\0'});
-  s21::multiset<char> multiset_copy_char = multiset_char;
-  s21::multiset<char> multiset_other_char({'3', '4'});
-  s21::multiset<char> multiset_other_copy_char = multiset_other_char;
-
-  multiset_char.swap(multiset_other_char);
-
-  s21::multiset<char>::iterator it_multiset_char = multiset_char.begin(),
-                                it_multiset_other_char =
-                                    multiset_other_copy_char.begin();
-  for (; it_multiset_char != multiset_char.end() &&
-         it_multiset_other_char != multiset_other_copy_char.end();
-       ++it_multiset_char, ++it_multiset_other_char) {
-    EXPECT_EQ(*it_multiset_char, *it_multiset_other_char);
-  }
-  it_multiset_char = multiset_other_char.begin(),
-  it_multiset_other_char = multiset_copy_char.begin();
-  for (; it_multiset_char != multiset_other_char.end() &&
-         it_multiset_other_char != multiset_copy_char.end();
-       ++it_multiset_char, ++it_multiset_other_char) {
-    EXPECT_EQ(*it_multiset_char, *it_multiset_other_char);
-  }
-
-  s21::multiset<double> multiset_double(
-      {0.23, 123.2305, 239868.343, 2383.3434});
-  s21::multiset<double> multiset_copy_double = multiset_double;
-  s21::multiset<double> multiset_other_double({934.56, 34, 45.2});
-  s21::multiset<double> multiset_other_copy_double = multiset_other_double;
-
-  multiset_double.swap(multiset_other_double);
-
-  s21::multiset<double>::iterator it_multiset_double = multiset_double.begin(),
-                                  it_multiset_other_double =
-                                      multiset_other_copy_double.begin();
-  for (; it_multiset_double != multiset_double.end() &&
-         it_multiset_other_double != multiset_other_copy_double.end();
-       ++it_multiset_double, ++it_multiset_other_double) {
-    EXPECT_EQ(*it_multiset_double, *it_multiset_other_double);
-  }
-  it_multiset_double = multiset_other_double.begin(),
-  it_multiset_other_double = multiset_copy_double.begin();
-  for (; it_multiset_double != multiset_other_double.end() &&
-         it_multiset_other_double != multiset_copy_double.end();
-       ++it_multiset_double, ++it_multiset_other_double) {
-    EXPECT_EQ(*it_multiset_double, *it_multiset_other_double);
-  }
-
-  s21::multiset<Point> multiset_point({Point(1, 2), Point(12, 4), Point()});
-  s21::multiset<Point> multiset_copy_point = multiset_point;
-  s21::multiset<Point> multiset_other_point({Point(34, 65)});
-  s21::multiset<Point> multiset_other_copy_point = multiset_other_point;
-
-  multiset_point.swap(multiset_other_point);
-
-  s21::multiset<Point>::iterator it_multiset_point = multiset_point.begin(),
-                                 it_multiset_other_point =
-                                     multiset_other_copy_point.begin();
-  for (; it_multiset_point != multiset_point.end() &&
-         it_multiset_other_point != multiset_other_copy_point.end();
-       ++it_multiset_point, ++it_multiset_other_point) {
-    EXPECT_EQ(*it_multiset_point, *it_multiset_other_point);
-  }
-  it_multiset_point = multiset_other_point.begin(),
-  it_multiset_other_point = multiset_copy_point.begin();
-  for (; it_multiset_point != multiset_other_point.end() &&
-         it_multiset_other_point != multiset_copy_point.end();
-       ++it_multiset_point, ++it_multiset_other_point) {
-    EXPECT_EQ(*it_multiset_point, *it_multiset_other_point);
-  }
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
+  s21Multiset.insert(1);
+  stlMultiset.insert(1);
+  EXPECT_EQ(s21Multiset.empty(), stlMultiset.empty());
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
 }
 
-TEST(multiset, modifiersMerge) {
-  for (int i = 0; i < 100; ++i) {
-    int n, q;
-    s21::multiset<int> test1, test2;
-    std::multiset<int> check1, check2;
-
-    n = rand() % 20 + 1;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20 + 1;
-      test1.insert(q);
-      check1.insert(q);
-    }
-
-    n = rand() % 20 + 1;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20 + 1;
-      test2.insert(q);
-      check2.insert(q);
-    }
-
-    test1.merge(test2);
-    // check1.merge(check2);
-
-    s21::multiset<int>::iterator it_test;
-    std::multiset<int>::iterator it_check;
-
-    it_test = test1.begin(), it_check = check1.begin();
-    for (; it_test != test1.end() && it_check != check1.end();
-         ++it_test, ++it_check)
-      EXPECT_EQ(*it_test, *it_check);
-    EXPECT_EQ(it_test, test1.end());
-    EXPECT_EQ(it_check, check1.end());
-
-    it_test = test2.begin(), it_check = check2.begin();
-    for (; it_test != test2.end() && it_check != check2.end();
-         ++it_test, ++it_check)
-      EXPECT_EQ(*it_test, *it_check);
-    EXPECT_EQ(it_test, test2.end());
-    EXPECT_EQ(it_check, check2.end());
-  }
+TEST(multiset, max_size) {
+  s21::multiset<int> s21Multiset{};
+  auto maxSize = s21Multiset.max_size();
+  EXPECT_GT(maxSize, 0);
 }
 
-TEST(multiset, lookupCountFindContains) {
-  for (int i = 0; i < 100; ++i) {
-    int q, n = rand() % 20 + 1;
-    s21::multiset<int> test;
-    std::multiset<int> check;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20;
-      test.insert(q);
-      check.insert(q);
-    }
+TEST(multiset, clear) {
+  s21::multiset<int> s21Multiset{};
+  std::multiset<int> stlMultiset{};
 
-    s21::multiset<int>::iterator it_test = test.begin();
-    std::multiset<int>::iterator it_check = check.begin();
+  EXPECT_EQ(s21Multiset.empty(), stlMultiset.empty());
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
 
-    EXPECT_EQ(test.size(), check.size());
-    it_test = test.begin(), it_check = check.begin();
-    for (; it_test != test.end() && it_check != check.end();
-         ++it_test, ++it_check)
-      EXPECT_EQ(*it_test, *it_check);
+  s21Multiset.insert(1);
+  stlMultiset.insert(1);
+  EXPECT_EQ(s21Multiset.empty(), stlMultiset.empty());
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
 
-    EXPECT_EQ(it_test, test.end());
-    EXPECT_EQ(it_check, check.end());
-
-    n = rand() % 20 + 1;
-    for (int j = 0; j < n; ++j) {
-      q = rand() % 20;
-      EXPECT_EQ(test.count(q), check.count(q));
-      it_test = test.find(q);
-      it_check = check.find(q);
-      if (it_test == test.end()) {
-        EXPECT_EQ(it_check, check.end());
-      } else {
-        EXPECT_EQ(*it_test, *it_check);
-      }
-      EXPECT_EQ(test.contains(q), check.find(q) != check.end());
-    }
-  }
+  s21Multiset.clear();
+  stlMultiset.clear();
+  EXPECT_EQ(s21Multiset.empty(), stlMultiset.empty());
+  EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
 }
 
-TEST(multiset, lookupBounds) {
-  for (int i = 0; i < 1000; ++i) {
-    s21::multiset<int> test;
-    std::multiset<int> check;
-    int q;
+TEST(multiset, insert) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
 
-    for (int j = 0; j < rand() % 20; ++j) {
-      q = rand() % 20 + 1;
-      test.insert(q);
-      check.insert(q);
-    }
+  auto s21InsertResult = s21Multiset.insert(4);
+  auto stlInsertResult = stlMultiset.insert(4);
+  EXPECT_EQ(s21Multiset.count(4), stlMultiset.count(4));
+  EXPECT_TRUE(*s21InsertResult == *stlInsertResult);
 
-    q = rand() % 20;
-    s21::multiset<int>::iterator it_test;
-    std::multiset<int>::iterator it_check;
+  s21InsertResult = s21Multiset.insert(1);
+  stlInsertResult = stlMultiset.insert(1);
+  EXPECT_EQ(s21Multiset.count(1), stlMultiset.count(1));
+  EXPECT_TRUE(*s21InsertResult == *stlInsertResult);
+}
 
-    it_test = test.lower_bound(q);
-    it_check = check.lower_bound(q);
-    EXPECT_EQ(it_test != test.end(), it_check != check.end());
-    if (it_test != test.end() && it_check != check.end()) {
-      EXPECT_EQ(*it_test, *it_check);
-    }
+TEST(multiset, erase) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  auto size = s21Multiset.size();
+  auto itEnd = s21Multiset.end();
+  itEnd--;
+  s21Multiset.erase(itEnd);
+  auto new_size = s21Multiset.size();
 
-    it_test = test.upper_bound(q);
-    it_check = check.upper_bound(q);
-    EXPECT_EQ(it_test != test.end(), it_check != check.end());
-    if (it_test != test.end() && it_check != check.end()) {
-      EXPECT_EQ(*it_test, *it_check);
-    }
+  EXPECT_NE(size, new_size);
+  s21Multiset.erase(s21Multiset.begin());
+  stlMultiset.erase(stlMultiset.begin());
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
+  auto s21IterEnd = s21Multiset.end();
 
-    std::pair<s21::multiset<int>::iterator, s21::multiset<int>::iterator>
-        it_pair_test;
-    std::pair<std::multiset<int>::iterator, std::multiset<int>::iterator>
-        it_pair_check;
-    it_pair_test = test.equal_range(q);
-    it_pair_check = check.equal_range(q);
-    EXPECT_EQ(it_pair_test.first != test.end(),
-              it_pair_check.first != check.end());
-    if (it_pair_test.first != test.end() &&
-        it_pair_check.first != check.end()) {
-      EXPECT_EQ(*it_pair_test.first, *it_pair_check.first);
-    }
-    EXPECT_EQ(it_pair_test.second != test.end(),
-              it_pair_check.second != check.end());
-    if (it_pair_test.second != test.end() &&
-        it_pair_check.second != check.end()) {
-      EXPECT_EQ(*it_pair_test.second, *it_pair_check.second);
-    }
-  }
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
+}
+
+TEST(multiset, swap) {
+  s21::multiset<int> s21Multiset{0, 1, 2};
+  s21::multiset<int> s21SwapMultiset{3, 3, 4, 5, 7, 6, 6};
+
+  s21Multiset.swap(s21SwapMultiset);
+  EXPECT_EQ(s21Multiset.size(), 7);
+  EXPECT_EQ(s21SwapMultiset.size(), 3);
+  EXPECT_EQ(*s21Multiset.begin(), 3);
+  EXPECT_EQ(*s21SwapMultiset.begin(), 0);
+}
+
+TEST(multiset, merge) {
+  s21::multiset<int> s21Multiset{0, 1, 2};
+  s21::multiset<int> s21MergeMultiset{3, 3, 4, 5, 7, 6, 6};
+  s21Multiset.merge(s21MergeMultiset);
+  std::multiset<int> stlMultiset{0, 1, 2};
+  std::multiset<int> stlMergeMultiset{3, 3, 4, 5, 7, 6, 6};
+  stlMultiset.merge(stlMergeMultiset);
+
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
+  auto s21IterEnd = s21Multiset.end();
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
+  EXPECT_EQ(stlMultiset.size(), s21Multiset.size());
+  EXPECT_EQ(s21MergeMultiset.size(), stlMergeMultiset.size());
+}
+
+TEST(multiset, count) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  EXPECT_EQ(s21Multiset.count(3), stlMultiset.count(3));
+  EXPECT_EQ(s21Multiset.count(0), stlMultiset.count(0));
+  EXPECT_EQ(s21Multiset.count(4), stlMultiset.count(4));
+}
+
+TEST(multiset, find) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  auto s21Iter = s21Multiset.find(3);
+  auto stlIter = stlMultiset.find(3);
+  auto s21Iter2 = s21Multiset.find(4);
+  auto stlIter2 = stlMultiset.find(4);
+
+  EXPECT_EQ(*s21Iter, *stlIter);
+  EXPECT_EQ(*s21Iter2, *s21Multiset.end());
+}
+
+TEST(multiset, contains) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  auto isContains1 = s21Multiset.contains(4);
+  auto isContains2 = s21Multiset.contains(1);
+
+  EXPECT_EQ(isContains1, false);
+  EXPECT_EQ(isContains2, true);
+}
+
+TEST(multiset, equal_range) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  auto s21Range = s21Multiset.equal_range(3);
+  auto stlRange = stlMultiset.equal_range(3);
+  EXPECT_EQ(*s21Range.first--, *stlRange.first--);
+  EXPECT_EQ(*s21Range.second, *stlRange.second);
+}
+
+TEST(multiset, lower_bound) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  auto s21Iter = s21Multiset.lower_bound(3);
+  auto stlIter = stlMultiset.lower_bound(3);
+  EXPECT_EQ(*s21Iter--, *stlIter--);
+}
+
+TEST(multiset, upper_bound) {
+  s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  auto s21Iter = s21Multiset.upper_bound(3);
+  auto stlIter = stlMultiset.upper_bound(3);
+  EXPECT_EQ(*s21Iter, *stlIter);
 }

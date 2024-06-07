@@ -592,7 +592,10 @@ typename RBTree<Key, Value>::Node *RBTree<Key, Value>::findMax(Node *node) {
 template <typename Key, typename Value>
 typename RBTree<Key, Value>::Node *RBTree<Key, Value>::findNode(Node *node,
                                                                 key_type key) {
-  if (node == nullptr || node->key == key) return node;
+  if (node && node->key == key)
+    return node;
+  else if (node == nullptr)
+    return end().node;
 
   if (key < node->key)
     return findNode(node->left, key);
