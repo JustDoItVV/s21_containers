@@ -144,8 +144,7 @@ RBTree<Key, Value>::~RBTree() {
  * *************************/
 
 template <typename Key, typename Value>
-typename RBTree<Key, Value>::RBTree &RBTree<Key, Value>::operator=(
-    RBTree &&other) {
+RBTree<Key, Value> &RBTree<Key, Value>::operator=(RBTree &&other) {
   if (this != &other) {
     root = other.root;
     other.root = nullptr;

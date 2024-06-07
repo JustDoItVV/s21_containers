@@ -11,9 +11,9 @@ class multiset : public RBTree<Key, Key> {
   using key_type = Key;
   using value_type = Key;
   using reference = value_type&;
-  using const_reference = const reference;
+  using const_reference = const value_type&;
   using iterator = typename RBTree<Key, Key>::Iterator;
-  using const_iterator = const iterator;
+  using const_iterator = const typename RBTree<Key, Key>::Iterator;
   using size_type = size_t;
   using Node = typename RBTree<Key, Key>::Node;
 
