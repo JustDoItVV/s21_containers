@@ -1,12 +1,10 @@
-#ifndef __S21_CONTAINERS_stack_H__
-#define __S21_CONTAINERS_stack_H__
+#ifndef __S21_CONTAINERS_Stack_H__
+#define __S21_CONTAINERS_Stack_H__
 
 #include <initializer_list>
 #include <iostream>
 #include <list>
 #include <utility>
-
-using namespace std;
 
 namespace s21 {
 template <class T>
@@ -15,17 +13,19 @@ class stack {
   using value_type = T;
   using reference = T &;
   using const_reference = const T &;
-  using size_type = size_t;
+  using size_type = std::size_t;
 
   // Member functions
-  stack() : l() { l = list<value_type>(); }
-  stack(initializer_list<value_type> const &items) {
-    l = list<value_type>(items);
+  stack() : l() { l = std::list<value_type>(); }
+  stack(std::initializer_list<value_type> const &items) {
+    l = std::list<value_type>(items);
   }
   stack(const stack &s) {
-    l = list<value_type>(s.l.size());
-    for (size_t i = 0; i < s.l.size(); i++) {
-      l[i] = s.l[i];
+    l = std::list<value_type>(s.l.size());
+    auto itL = l.begin();
+    for (auto it = s.l.begin(), end = s.l.end(); it != end; it++) {
+      *itL = *it;
+      itL++;
     }
   }
   stack(stack &&s) : l(std::move(s.l)) {}
@@ -47,9 +47,7 @@ class stack {
   void swap(stack &other) { this->l.swap(other.l); }
 
  private:
-  list<value_type> l;
+  std::list<value_type> l;
 };
-
-}  // namespace s21
-
+};  // namespace s21
 #endif
