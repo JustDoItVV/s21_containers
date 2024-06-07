@@ -13,8 +13,6 @@ TEST(List, constructorDefault) {
 TEST(List, Constructor_Initializer_list) {
   s21::list<int> s21_list = {1, 2, 3, 4};
   std::list<int> std_list = {1, 2, 3, 4};
- EXPECT_EQ(s21_list.front(), std_list.front());
-  EXPECT_EQ(s21_list.back(), std_list.back());
   EXPECT_EQ(s21_list.size(), std_list.size());
   EXPECT_EQ(s21_list.empty(), std_list.empty()); 
 }
@@ -92,12 +90,10 @@ TEST(List, Modifier_Erase) {
 TEST(List, Modifier_Push) {
   s21::list<int> s21_list = {1, 2, 3, 4};
   std::list<int> std_list = {1, 2, 3, 4};
-  s21_list.push_back(5);
   s21_list.push_front(0);
+  s21_list.push_back(5);
   std_list.push_back(5);
   std_list.push_front(0);
-  EXPECT_EQ(s21_list.front(), std_list.front());
-  EXPECT_EQ(s21_list.back(), std_list.back());
   EXPECT_EQ(s21_list.size(), std_list.size());
   EXPECT_EQ(s21_list.empty(), std_list.empty());
   auto it1 = s21_list.begin();

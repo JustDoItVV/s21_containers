@@ -86,18 +86,17 @@ namespace s21 {
     // list functions
     list() : end_(new ListNode<T>(value_type())), size_(0) {}
 
-    list(size_type n) : head_(nullptr), tail_(nullptr), end_(nullptr), size_(0) {
+    list(size_type n) : end_(new ListNode<T>(value_type())), size_(0) {
       for (size_type i = 0; i < n; ++i) {
           push_back(value_type());
       }
       if (n > 0) {
-          end_ = new ListNode<T>(value_type(), tail_, nullptr);
           tail_->next_ = end_;
       }
     }
 
-    list(std::initializer_list<value_type> const &items) {
-      for (const_reference item : items) {
+    list(std::initializer_list<value_type> const &items) : end_(new ListNode<T>(value_type())), size_(0) {
+      for (const auto &item : items) {
           push_back(item);
       }
     }
@@ -150,7 +149,8 @@ namespace s21 {
 
     const_reference back() const {
       if (!empty()) {
-        return *(--end());;
+        std::cout << "HER IN BACK" << std::endl;
+        return *(--end());
       }
       else {
         throw std::out_of_range("List is empty.");
@@ -243,20 +243,7 @@ namespace s21 {
       }
     }
 
-    void push_back (const_reference value) {
-      if (!head_) {
-        std::cout << "HERE" << std::endl;
-        head_ = new ListNode<value_type>(value);
-        tail_ = head_;
-      } else {
-        std::cout << "HERE 2" << std::endl;
-        tail_->next_ = new ListNode<value_type>(value);
-        tail_->next_->previous_ = tail_;
-        tail_ = tail_->next_;
-      }
-      std::cout << "HERE 3" << std::endl;
-      size_++;
-    }
+    void push_back (const_reference value) {insert(end(), value);}
 
     void pop_back() {erase(iterator(tail_));}
 
