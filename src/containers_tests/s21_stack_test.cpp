@@ -73,6 +73,7 @@ TEST(stack, moveAssignment) {
 TEST(stack, pushTop) {
   s21::stack<int> s21_stack;
   std::stack<int> std_stack;
+
   s21_stack.push(5);
   s21_stack.push(0);
   std_stack.push(5);
@@ -84,6 +85,7 @@ TEST(stack, pushTop) {
 TEST(stack, pushSize) {
   s21::stack<int> s21_stack;
   std::stack<int> std_stack;
+
   s21_stack.push(5);
   s21_stack.push(0);
   std_stack.push(5);
@@ -95,6 +97,7 @@ TEST(stack, pushSize) {
 TEST(stack, pushEmptyState) {
   s21::stack<int> s21_stack;
   std::stack<int> std_stack;
+
   s21_stack.push(5);
   s21_stack.push(0);
   std_stack.push(5);
@@ -106,6 +109,7 @@ TEST(stack, pushEmptyState) {
 TEST(stack, popAfterInitialPush) {
   s21::stack<int> s21_stack;
   std::stack<int> std_stack;
+
   s21_stack.push(5);
   s21_stack.push(0);
   std_stack.push(5);
@@ -122,6 +126,7 @@ TEST(stack, popAfterInitialPush) {
 TEST(stack, popAfterPushAndPop) {
   s21::stack<int> s21_stack;
   std::stack<int> std_stack;
+
   s21_stack.push(5);
   s21_stack.push(0);
   std_stack.push(5);
@@ -138,6 +143,7 @@ TEST(stack, popAfterPushAndPop) {
 TEST(stack, popAfterRepush) {
   s21::stack<int> s21_stack;
   std::stack<int> std_stack;
+
   s21_stack.push(5);
   s21_stack.push(0);
   std_stack.push(5);
