@@ -1,5 +1,5 @@
-#include <list>
 #include <iostream>
+#include <list>
 
 #include "../s21_containers_test.h"
 
@@ -14,7 +14,7 @@ TEST(List, Constructor_Initializer_list) {
   s21::list<int> s21_list = {1, 2, 3, 4};
   std::list<int> std_list = {1, 2, 3, 4};
   EXPECT_EQ(s21_list.size(), std_list.size());
-  EXPECT_EQ(s21_list.empty(), std_list.empty()); 
+  EXPECT_EQ(s21_list.empty(), std_list.empty());
 }
 
 TEST(List, Constructor_Parameterized) {
@@ -150,8 +150,10 @@ TEST(List, Modifier_Merge) {
   s21::list<int> s21_list_2 = {-1, 0, 5, 8};
   std::list<int> std_list_1 = {1, 3, 7};
   std::list<int> std_list_2 = {-1, 0, 5, 8};
+
   s21_list_1.merge(s21_list_2);
   std_list_1.merge(std_list_2);
+
   auto it1 = s21_list_1.begin();
   auto it2 = std_list_1.begin();
   while (it1 != s21_list_1.end()) {
