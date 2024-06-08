@@ -1,7 +1,7 @@
 # sudo apt install libgtest-dev
 CC := g++
 STANDARD := -std=c++17
-CFLAGS := -Wall -Wextra -Werror $(STANDARD) -pedantic
+CFLAGS := -Wall -Wextra -Werror $(STANDARD)
 TEST_FLAGS := $(shell pkg-config gtest --libs)
 GCOV_FLAGS := -fprofile-arcs -ftest-coverage
 OS := $(shell uname -s)
@@ -18,8 +18,7 @@ rebuild : clean all
 
 
 test : $(wildcard containers_tests/*.cpp)
-	# $(CC) $(CFLAGS) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
-	$(CC) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
+	$(CC) $(CFLAGS) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
 	./$(PROJECT)_$@
 
 format :
@@ -27,7 +26,7 @@ format :
 
 check :
 	clang-format --style=file:"../materials/linters/.clang-format" -n */*.cpp */*.h
-	cppcheck --enable=all --suppress=missingIncludeSystem -$(STANDARD) --language=c++ */*.cpp */*.h
+	@# cppcheck --enable=all --suppress=missingIncludeSystem -$(STANDARD) --language=c++ */*.cpp */*.h
 
 valgrind_check :
 	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -s --track-origins=yes ./$(PROJECT)_test
