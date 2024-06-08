@@ -1,90 +1,33 @@
-CC = g++
-GCOV = gcov
-FLAGS = -std=c++17
-# OPTFLAGS = -pedantic
-# для сборки и линковки на школьном маке
-LTEST = $(shell pkg-config --cflags gtest)
-LLTEST = $(shell pkg-config --libs gtest)
+# sudo apt install libgtest-dev
+CC := g++
+STANDARD := -std=c++17
+CFLAGS := -Wall -Wextra -Werror $(STANDARD) -pedantic
+TEST_FLAGS := $(shell pkg-config gtest --libs)
+GCOV_FLAGS := -fprofile-arcs -ftest-coverage
+OS := $(shell uname -s)
 
-#  для компиляции НЕ на школьном маке
-#  g++ containers_tests/s21_containers_test.cpp -o test -lgtest -pthread
+PROJECT := s21_containers
 
-GOFLAGS = --coverage
-GFLAGS = -fprofile-arcs -ftest-coverage
+all : test
 
-OS = $(shell uname)
-OPENOS = vi
-ifeq ($(shell uname -s), Linux)
-		OPENOS = xdg-open
-endif
-ifeq ($(shell uname -s), Darwin)
-		OPENOS = open -a "Google Chrome"
-endif
 
-.PHONY : all, clean, test,
-				leaks style style-fix check valgrind clean rebuild
+clean :
+	rm -rf *.a *.o s21_containers_test
 
-BUILD_DIR = build
-TEST_DIR = containers_tests
-BUILD_TEST_DIR = build_tests
+rebuild : clean all
 
-S21_SOURCES = $(wildcard s21_*.cpp)
-S21_OBJECTS=$(addprefix $(BUILD_DIR)/, $(S21_SOURCES:.cpp=.o))
 
-TESTS = $(wildcard $(TEST_DIR)/*_test.cpp)
-TEST_OBJECTS=$(addprefix $(BUILD_TEST_DIR)/, $(notdir $(TESTS:.cpp=.o)))
+test : $(wildcard containers_tests/*.cpp)
+	# $(CC) $(CFLAGS) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
+	$(CC) $(PROJECT)_$@.cpp $+ -o $(PROJECT)_$@ $(TEST_FLAGS)
+	./$(PROJECT)_$@
 
-all: test
+format :
+	clang-format --style=file:"../materials/linters/.clang-format" -i */*.cpp */*.h
 
-test: test_main
-	./test
+check :
+	clang-format --style=file:"../materials/linters/.clang-format" -n */*.cpp */*.h
+	cppcheck --enable=all --suppress=missingIncludeSystem -$(STANDARD) --language=c++ */*.cpp */*.h
 
-test_main:  $(TEST_OBJECTS) s21_containers_test.o
-	$(CC) $(FLAGS) $(GOFLAGS) $^ -o test $(LLTEST)
-
-$(TEST_OBJECTS) : $(BUILD_TEST_DIR)/%.o : $(TEST_DIR)/%.cpp s21_containers_test.h
-	mkdir -p $(BUILD_TEST_DIR)
-	$(CC) $(FLAGS) $(OPTFLAGS) -c $< -o $@ $(LTEST)
-
-s21_containers_test.o: s21_containers_test.cpp
-	$(CC) $(FLAGS) $(OPTFLAGS) -c s21_containers_test.cpp -o s21_containers_test.o $(LTEST)
-
-leaks: test_main
-ifeq ($(OS), Linux)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck -s ./test
-else
-	leaks -atExit -- ./test
-endif
-
-style:
-	@cp ../materials/linters/.clang-format ./
-	@clang-format --style=google -n */*.cpp *.h
-	@clang-format --style=google -n containers/*.h
-	@rm -rf .clang-format
-
-style-fix:
-	@cp ../materials/linters/.clang-format ./
-	@clang-format --style=google -i */*.cpp *.h
-	@clang-format --style=google -i containers/*.h
-	@rm -rf .clang-format
-
-# CPP-check
-check:
-	cppcheck --enable=all --suppress=missingIncludeSystem ./
-
-valgrind:
-	docker build -t ubuntu_01:latest .
-	docker run -p 8085:8085 --name matrix01 ubuntu_01:latest
-	docker rm matrix01
-	docker rmi ubuntu_01:latest
-
-clean:
-	@rm -rf test
-	@rm -rf $(LIB)
-	@rm -rf $(BUILD_DIR)
-	@rm -rf $(BUILD_TEST_DIR)
-	@rm -rf *.o
-
-rebuild:
-	$(MAKE) clean
-	$(MAKE) all
+valgrind_check :
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all -s --track-origins=yes ./$(PROJECT)_test
