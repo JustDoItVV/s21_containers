@@ -16,18 +16,11 @@ class stack {
   using size_type = std::size_t;
 
   // Member functions
-  stack() : l() { l = std::list<value_type>(); }
-  stack(std::initializer_list<value_type> const &items) {
+  stack() : l() {}
+  stack(std::initializer_list<value_type> const &items) : l() {
     for (auto it : items) l.push_front(it);
   }
-  stack(const stack &s) {
-    l = std::list<value_type>(s.l.size());
-    auto itL = l.begin();
-    for (auto it = s.l.begin(), end = s.l.end(); it != end; it++) {
-      *itL = *it;
-      itL++;
-    }
-  }
+  stack(const stack &s) : l(s.l) {}
   stack(stack &&s) : l(std::move(s.l)) {}
   stack &operator=(stack &&s) {
     this->l = std::move(s.l);
@@ -52,7 +45,7 @@ class stack {
   }
 
  private:
-  std::list<value_type> l;
+  s21::list<value_type> l;
 };
 };  // namespace s21
 #endif

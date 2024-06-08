@@ -12,7 +12,7 @@ TEST(stack, сonstructorDefault) {
 }
 
 TEST(stack, сonstructorInitializeList) {
-  s21::stack<char> s21_stack_1 = {1, 2, 3, 4};
+  s21::stack<int> s21_stack_1 = {1, 2, 3, 4};
   for (int i = 4; i > 0; i--) {
     EXPECT_EQ(s21_stack_1.top(), i);
     s21_stack_1.pop();
@@ -60,8 +60,7 @@ TEST(stack, moveConstructor) {
 
 TEST(stack, moveAssignment) {
   s21::stack<int> s1 = {1, 2, 3, 4};
-  s21::stack<int> s2 = {5, 6};
-  s2 = std::move(s1);
+  s21::stack<int> s2 = std::move(s1);
 
   EXPECT_TRUE(s1.empty());
   EXPECT_EQ(s2.size(), 4);
