@@ -7,6 +7,7 @@ TEST(multiset, defaultConstructor) {
   std::multiset<int> stlIntMultiset;
   std::multiset<char> stlCharMultiset;
   std::multiset<double> stlDoubleMultiset;
+
   EXPECT_EQ(s21IntMultiset.empty(), stlIntMultiset.empty());
   EXPECT_EQ(s21CharMultiset.empty(), stlCharMultiset.empty());
   EXPECT_EQ(s21DoubleMultiset.empty(), stlDoubleMultiset.empty());
@@ -18,6 +19,7 @@ TEST(multiset, initializerConstructor1) {
   auto s21Iter = s21EmptyMultiset.begin();
   auto stlIter = stlEmptyMultiset.begin();
   auto s21IterEnd = s21EmptyMultiset.end();
+
   EXPECT_EQ(s21EmptyMultiset.size(), stlEmptyMultiset.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, *stlIter);
@@ -29,6 +31,7 @@ TEST(multiset, initializerConstructor2) {
   auto s21Iter = s21Multiset.begin();
   auto stlIter = stlMultiset.begin();
   auto s21IterEnd = s21Multiset.end();
+
   EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, *stlIter);
@@ -40,6 +43,7 @@ TEST(multiset, initializerConstructor3) {
   auto s21Iter = s21Multiset.begin();
   auto stlIter = stlMultiset.begin();
   auto s21IterEnd = s21Multiset.end();
+
   EXPECT_EQ(s21Multiset.size(), stlMultiset.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, *stlIter);
@@ -53,6 +57,7 @@ TEST(multiset, copyConstructor) {
   auto s21Iter = s21MultisetCopy.begin();
   auto stlIter = stlMultisetCopy.begin();
   auto s21IterEnd = s21MultisetCopy.end();
+
   EXPECT_EQ(s21MultisetCopy.size(), stlMultisetCopy.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, *stlIter);
@@ -175,6 +180,7 @@ TEST(multiset, swap) {
   s21::multiset<int> s21SwapMultiset{3, 3, 4, 5, 7, 6, 6};
 
   s21Multiset.swap(s21SwapMultiset);
+
   EXPECT_EQ(s21Multiset.size(), 7);
   EXPECT_EQ(s21SwapMultiset.size(), 3);
   EXPECT_EQ(*s21Multiset.begin(), 3);
@@ -201,6 +207,7 @@ TEST(multiset, merge) {
 TEST(multiset, count) {
   s21::multiset<int> s21Multiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
   std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
   EXPECT_EQ(s21Multiset.count(3), stlMultiset.count(3));
   EXPECT_EQ(s21Multiset.count(0), stlMultiset.count(0));
   EXPECT_EQ(s21Multiset.count(4), stlMultiset.count(4));
@@ -234,6 +241,7 @@ TEST(multiset, equal_range) {
 
   auto s21Range = s21Multiset.equal_range(3);
   auto stlRange = stlMultiset.equal_range(3);
+
   EXPECT_EQ(*s21Range.first--, *stlRange.first--);
   EXPECT_EQ(*s21Range.second, *stlRange.second);
 }
@@ -244,6 +252,7 @@ TEST(multiset, lower_bound) {
 
   auto s21Iter = s21Multiset.lower_bound(3);
   auto stlIter = stlMultiset.lower_bound(3);
+
   EXPECT_EQ(*s21Iter--, *stlIter--);
 }
 
@@ -253,6 +262,7 @@ TEST(multiset, upper_bound) {
 
   auto s21Iter = s21Multiset.upper_bound(3);
   auto stlIter = stlMultiset.upper_bound(3);
+
   EXPECT_EQ(*s21Iter, *stlIter);
 }
 

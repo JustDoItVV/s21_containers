@@ -30,6 +30,7 @@ TEST(map, defaultConstructor) {
   std::map<char, double> stlCharDoubleMap;
   std::map<double, Point> stlDoubleClassMap;
   std::map<Point, std::map<int, int>> stlClassContainerMap;
+
   EXPECT_EQ(s21IntIntMap.empty(), stlIntIntMap.empty());
   EXPECT_EQ(s21IntCharMap.empty(), stlIntCharMap.empty());
   EXPECT_EQ(s21CharDoubleMap.empty(), stlCharDoubleMap.empty());
@@ -43,6 +44,7 @@ TEST(map, initializerConstructor1) {
   auto s21Iter = s21EmptyMap.begin();
   auto stlIter = stlEmptyMap.begin();
   auto s21IterEnd = s21EmptyMap.end();
+
   EXPECT_EQ(s21EmptyMap.size(), stlEmptyMap.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, (*stlIter).second);
@@ -54,6 +56,7 @@ TEST(map, initializerConstructor2) {
   auto s21Iter = s21IntIntMap.begin();
   auto stlIter = stlIntIntMap.begin();
   auto s21IterEnd = s21IntIntMap.end();
+
   EXPECT_EQ(s21IntIntMap.size(), stlIntIntMap.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, (*stlIter).second);
@@ -67,6 +70,7 @@ TEST(map, initializerConstructor3) {
   auto s21Iter = s21IntCharMap.begin();
   auto stlIter = stlIntCharMap.begin();
   auto s21IterEnd = s21IntCharMap.end();
+
   EXPECT_EQ(s21IntCharMap.size(), stlIntCharMap.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, (*stlIter).second);
@@ -80,6 +84,7 @@ TEST(map, initializerConstructor4) {
   auto s21Iter = s21CharDoubleMap.begin();
   auto stlIter = stlCharDoubleMap.begin();
   auto s21IterEnd = s21CharDoubleMap.end();
+
   EXPECT_EQ(s21CharDoubleMap.size(), stlCharDoubleMap.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, (*stlIter).second);
@@ -93,6 +98,7 @@ TEST(map, copyConstructor) {
   auto s21Iter = s21MapCopy.begin();
   auto stlIter = stlMapCopy.begin();
   auto s21IterEnd = s21MapCopy.end();
+
   EXPECT_EQ(s21MapCopy.size(), stlMapCopy.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, (*stlIter).second);
@@ -106,6 +112,7 @@ TEST(map, moveConstructor) {
   auto s21Iter = s21MapMoved.begin();
   auto stlIter = stlMapMoved.begin();
   auto s21IterEnd = s21MapMoved.end();
+
   EXPECT_EQ(s21MapMoved.size(), stlMapMoved.size());
   for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
     EXPECT_EQ(*s21Iter, (*stlIter).second);
@@ -137,6 +144,7 @@ TEST(map, end) {
 TEST(map, empty) {
   s21::map<int, int> s21EmptyMap{};
   std::map<int, int> stlEmptyMap{};
+
   EXPECT_EQ(s21EmptyMap.empty(), stlEmptyMap.empty());
 }
 
@@ -153,7 +161,9 @@ TEST(map, size) {
 
 TEST(map, max_size) {
   s21::map<int, int> s21Map;
+
   auto maxSize = s21Map.max_size();
+
   EXPECT_GT(maxSize, 0);
 }
 

@@ -219,7 +219,6 @@ TEST(stack, insertManyFront) {
   s1.insert_many_front(2, 3, 4);
 
   while (!s1.empty()) {
-    // std::cout << s1.top() << " " << s2.top() << std::endl;
     EXPECT_EQ(s1.top(), s2.top());
     s1.pop();
     s2.pop();

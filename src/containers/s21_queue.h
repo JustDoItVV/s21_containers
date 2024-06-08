@@ -2,12 +2,10 @@
 #define __S21_CONTAINERS_QUEUE_H__
 
 #include <iostream>
-#include <list>  //TODO: убрать после того, как будет завершен наш лист
 #include <utility>
-// #include "s21_list.h"
 
 namespace s21 {
-template <class T, class ConteinerList = std::list<T>>
+template <class T, class ConteinerList = list<T>>
 class queue {
  public:
   // Queue Member type
@@ -44,13 +42,13 @@ class queue {
 
   // Queue Element access
   const_reference front() const { return data_.front(); }
-  reference front() { return data_.front(); }
+  reference front() { return (reference)data_.front(); }
   const_reference back() const { return data_.back(); }
-  reference back() { return data_.back(); }
+  reference back() { return (reference)data_.back(); }
 
   // Queue Capacity
-  bool empty() const { return data_.empty(); }
-  size_type size() const { return data_.size(); }
+  bool empty() { return data_.empty(); }
+  size_type size() { return data_.size(); }
 
   // Queue Modifiers
   void push(const_reference value) { data_.push_back(value); }

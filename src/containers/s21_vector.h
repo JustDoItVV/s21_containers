@@ -143,9 +143,9 @@ class vector {
 
   iterator insert(iterator pos, const_reference value) {
     if (capacity_ == size_) {
-      size_type index = pos - begin();  // вычисляем индекс
+      size_type index = pos - begin();
       reserve(capacity_ * 2);
-      pos = begin() + index;  // находим новый итератор
+      pos = begin() + index;
     }
     value_type prev = value;
     for (iterator it = pos; it <= end(); ++it) {
