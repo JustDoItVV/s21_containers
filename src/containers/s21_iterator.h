@@ -14,7 +14,7 @@ class ArrayIterator {
   using iterator = ArrayIterator<T, N>;
   using reference = value_type &;
 
-  ArrayIterator(pointer ptr) : ptr_(ptr), start_(ptr){};
+  ArrayIterator(pointer ptr) : start_(ptr), ptr_(ptr){};
 
   iterator &operator++();
   iterator operator++(int);

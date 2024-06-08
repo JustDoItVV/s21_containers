@@ -14,9 +14,9 @@ class array {
   // Member type
   using value_type = T;
   using reference = value_type &;
-  using const_reference = const reference;
+  using const_reference = const value_type &;
   using iterator = value_type *;
-  using cons_iterator = const iterator;
+  using cons_iterator = const value_type *;
   using size_type = size_t;
 
   // Member functions
@@ -54,8 +54,7 @@ class array {
 };
 
 template <typename T, size_t N>
-array<T, N>::array()
-    : iter_(typename ArrayIterator<T, N>::ArrayIterator(&(data_[0]))) {
+array<T, N>::array() : iter_(ArrayIterator<T, N>(&(data_[0]))) {
   for (size_t i = 0; i < N; i++) data_[i] = T();
 };
 

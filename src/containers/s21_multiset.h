@@ -11,9 +11,9 @@ class multiset : public RBTree<Key, Key> {
   using key_type = Key;
   using value_type = Key;
   using reference = value_type&;
-  using const_reference = const reference;
+  using const_reference = const value_type&;
   using iterator = typename RBTree<Key, Key>::Iterator;
-  using const_iterator = const iterator;
+  using const_iterator = const typename RBTree<Key, Key>::Iterator;
   using size_type = size_t;
   using Node = typename RBTree<Key, Key>::Node;
 
@@ -38,6 +38,13 @@ class multiset : public RBTree<Key, Key> {
   // Additional
   iterator insertNode(Node* node);
   void merge(multiset& other);
+
+  template <typename... Args>
+  s21::vector<std::pair<iterator, bool>> insert_many(Args&&... args) {
+    s21::vector<std::pair<iterator, bool>> ret;
+    (ret.push_back(std::pair(insert(std::forward<Args>(args)), true)), ...);
+    return ret;
+  }
 };
 
 template <typename Key>
@@ -126,7 +133,7 @@ void multiset<Key>::merge(multiset& other) {
   iterator it = constTree.begin();
   iterator itEnd = other.end();
 
-  for (; it != itEnd; ++it) iterator insertResult = insert(*it);
+  for (; it != itEnd; ++it) insert(*it);
   other.clear();
 }
 
