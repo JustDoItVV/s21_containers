@@ -75,7 +75,7 @@ class list {
   using pointer = ListNode<T>*;
 
   // list functions
-  list() : end_(new ListNode<T>(value_type())), size_(0) {}
+  list() : head_(new ListNode<T>(value_type())), end_(head_), size_(0) {}
 
   list(size_type n) : end_(new ListNode<T>(value_type())), size_(0) {
     for (size_type i = 0; i < n; ++i) {
@@ -123,8 +123,16 @@ class list {
   list operator=(list&& l) {
     if (this != &l) {
       clear();
+      if (end_) delete end_;
+      if (head_) delete head_;
       end_ = l.end_;
+      tail_ = l.tail_;
+      head_ = l.head_;
+      size_ = l.size_;
       l.end_ = nullptr;
+      l.tail_ = nullptr;
+      l.head_ = nullptr;
+      l.size_ = 0;
     }
     return *this;
   }
@@ -148,7 +156,9 @@ class list {
 
   // list iterators
   iterator begin() const { return iterator(head_); }
+  const_iterator cbegin() const { return const_iterator(head_); }
   iterator end() const { return iterator(end_); }
+  const_iterator cend() const { return const_iterator(end_); }
 
   // list capacity
   bool empty() const { return size_ == 0; }
@@ -171,6 +181,7 @@ class list {
     else
       head_ = newNode;
     pos.current_->previous_ = newNode;
+
     newNode->next_ = pos.current_;
 
     if (pos.current_ == end_) tail_ = newNode;
@@ -321,6 +332,28 @@ class list {
       delete left;
       delete right;
     }
+  }
+
+  template <typename... Args>
+  iterator insert_many(iterator pos, Args&&... args) {
+    iterator new_pos = ++pos;
+    auto elems = {std::forward<Args>(args)...};
+    for (auto it = std::make_reverse_iterator(elems.end()),
+              rend = std::make_reverse_iterator(elems.begin());
+         it != rend; ++it) {
+      new_pos = insert(new_pos, std::move(*it));
+    }
+    return new_pos;
+  }
+
+  template <typename... Args>
+  void insert_many_back(Args&&... args) {
+    (push_back(std::forward<Args>(args)), ...);
+  }
+
+  template <typename... Args>
+  void insert_many_front(Args&&... args) {
+    (push_front(std::forward<Args>(args)), ...);
   }
 
  private:

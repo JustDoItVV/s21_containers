@@ -223,3 +223,45 @@ TEST(list, modifierSort) {
     ++it1, ++it2;
   }
 }
+
+TEST(list, insertMany) {
+  s21::list<int> s21_list{1};
+  std::list<int> std_list{1, -1, -23, 4, 1, 5, 6, 4, -1, -1};
+
+  s21_list.insert_many(s21_list.begin(), -1, -23, 4, 1, 5, 6, 4, -1, -1);
+
+  auto it1 = s21_list.begin();
+  auto it2 = std_list.begin();
+  while (it1 != s21_list.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}
+
+TEST(list, insertManyBack) {
+  s21::list<int> s21_list{1};
+  std::list<int> std_list{1, -1, -23, 4, 1, 5, 6, 4, -1, -1};
+
+  s21_list.insert_many_back(-1, -23, 4, 1, 5, 6, 4, -1, -1);
+
+  auto it1 = s21_list.begin();
+  auto it2 = std_list.begin();
+  while (it1 != s21_list.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}
+
+TEST(list, insertManyFront) {
+  s21::list<int> s21_list{-1};
+  std::list<int> std_list{1, -1, -23, 4, 1, 5, 6, 4, -1, -1};
+
+  s21_list.insert_many_front(-1, 4, 6, 5, 1, 4, -23, -1, 1);
+
+  auto it1 = s21_list.begin();
+  auto it2 = std_list.begin();
+  while (it1 != s21_list.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}

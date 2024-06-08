@@ -70,13 +70,12 @@ TEST(set, begin) {
 TEST(set, end) {
   s21::set<std::string> setMy{"This", "is", "my", "set"};
   std::set<std::string> setBase{"This", "is", "my", "set"};
+
   auto iterMy = setMy.end();
   auto iterBase = setBase.end();
 
   iterMy--;
   iterBase--;
-  // в стнадартном контейнере ссылка на nil правый лист последнего
-  // элемента, т.е. последний элемент является предпоследним итератором
   EXPECT_EQ(*iterMy, *iterBase);
 }
 
@@ -96,6 +95,7 @@ TEST(set, size) {
   EXPECT_EQ(setMy.size(), setBase.size());
   setMy.insert('b');
   setBase.insert('c');
+
   EXPECT_EQ(setMy.empty(), setBase.empty());
   EXPECT_EQ(setMy.size(), setBase.size());
 }
@@ -167,6 +167,7 @@ TEST(set, swap) {
   s21::set<int> my_swap_set = {3, 4, 5};
 
   setMy.swap(my_swap_set);
+
   EXPECT_EQ(setMy.size(), 3);
   EXPECT_EQ(my_swap_set.size(), 1);
   EXPECT_EQ(*setMy.begin(), 3);
@@ -176,9 +177,11 @@ TEST(set, swap) {
 TEST(set, merge) {
   s21::set<int> setMy = {1};
   s21::set<int> setMyForMerge = {3, 4, 5};
+
   setMy.merge(setMyForMerge);
   std::set<int> setBase = {1};
   std::set<int> setBaseForMerge = {3, 4, 5};
+
   setBase.merge(setBaseForMerge);
   auto iterMy = setMy.begin();
   auto iterBase = setBase.begin();

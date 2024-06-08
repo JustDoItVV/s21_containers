@@ -2,7 +2,6 @@
 #define __S21_CONTAINERS_RBTREE_H__
 
 #include <iostream>
-#include <queue>  // replace with s21::queue when it's ready
 #include <utility>
 
 #include "s21_vector.h"
@@ -618,38 +617,6 @@ void RBTree<Key, Value>::destroy(Node *node) {
   destroy(node->left);
   destroy(node->right);
   delete node;
-}
-
-template <typename Key, typename Value>
-void RBTree<Key, Value>::visualize(Node *root) {
-  std::queue<Node *> activeQueue, nextQueue;
-  Node *nil = new Node();
-  nextQueue.push(root != nullptr ? root : nil);
-
-  while (!nextQueue.empty()) {
-    activeQueue = std::move(nextQueue);
-    while (!activeQueue.empty()) {
-      Node *node = activeQueue.front();
-      activeQueue.pop();
-      if (node->left != nullptr)
-        nextQueue.push(node->left);
-      else if (node != nil)
-        nextQueue.push(nil);
-      if (node->right != nullptr)
-        nextQueue.push(node->right);
-      else if (node != nil)
-        nextQueue.push(nil);
-      if (node->color == RED) std::cout << "\033[1;31m";
-      if (node != nil)
-        std::cout << node->value;
-      else
-        std::cout << "-";
-      if (node->color == RED) std::cout << "\033[0m";
-      std::cout << " ";
-    };
-    std::cout << std::endl;
-  };
-  std::cout << std::endl;
 }
 }  // namespace s21
 

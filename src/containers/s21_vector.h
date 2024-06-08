@@ -143,9 +143,9 @@ class vector {
 
   iterator insert(iterator pos, const_reference value) {
     if (capacity_ == size_) {
-      size_type index = pos - begin();  // вычисляем индекс
+      size_type index = pos - begin();
       reserve(capacity_ * 2);
-      pos = begin() + index;  // находим новый итератор
+      pos = begin() + index;
     }
     value_type prev = value;
     for (iterator it = pos; it <= end(); ++it) {
@@ -186,6 +186,23 @@ class vector {
     std::swap(size_, other.size_);
     std::swap(capacity_, other.capacity_);
     std::swap(arrPtr_, other.arrPtr_);
+  }
+
+  template <typename... Args>
+  iterator insert_many(iterator pos, Args &&...args) {
+    iterator new_pos = ++pos;
+    auto elems = {std::forward<Args>(args)...};
+    for (auto it = std::make_reverse_iterator(elems.end()),
+              rend = std::make_reverse_iterator(elems.begin());
+         it != rend; ++it) {
+      new_pos = insert(new_pos, std::move(*it));
+    }
+    return new_pos;
+  }
+
+  template <typename... Args>
+  void insert_many_back(Args &&...args) {
+    (push_back(std::forward<Args>(args)), ...);
   }
 
  private:

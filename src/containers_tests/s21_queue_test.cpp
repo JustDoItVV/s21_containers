@@ -124,3 +124,16 @@ TEST(queue, modifiersPushPopSwap) {
     }
   }
 }
+
+TEST(queue, insertManyBack) {
+  s21::queue<int> s21_queue({1});
+  std::queue<int> std_queue({1, -1, -23, 4, 1, 5, 6, 4, -1, -1});
+
+  s21_queue.insert_many_back(-1, -23, 4, 1, 5, 6, 4, -1, -1);
+
+  while (!s21_queue.empty()) {
+    EXPECT_EQ(s21_queue.front(), std_queue.front());
+    s21_queue.pop();
+    std_queue.pop();
+  }
+}
