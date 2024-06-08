@@ -329,6 +329,34 @@ TEST(vector, modifiersSwapEmptyAndNonEmptyVectors) {
   EXPECT_TRUE(v2.empty());
 }
 
+TEST(vector, insertMany) {
+  s21::vector<int> s21_vector = {1};
+  std::vector<int> std_vector = {1, 2, 3, 4};
+
+  s21_vector.insert_many(s21_vector.begin(), 2, 3, 4);
+
+  auto it1 = s21_vector.begin();
+  auto it2 = std_vector.begin();
+  while (it1 != s21_vector.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}
+
+TEST(vector, insertManyBack) {
+  s21::vector<int> s21_vector = {1};
+  std::vector<int> std_vector = {1, 2, 3, 4};
+
+  s21_vector.insert_many_back(2, 3, 4);
+
+  auto it1 = s21_vector.begin();
+  auto it2 = std_vector.begin();
+  while (it1 != s21_vector.end()) {
+    EXPECT_EQ(*it1, *it2);
+    ++it1, ++it2;
+  }
+}
+
 // TEST(VectorTest, InsertMany) {
 //   s21::vector<int> vec = {1, 2, 3, 7, 8};
 //   s21::vector<int>::const_iterator pos = vec.cbegin() + 3;

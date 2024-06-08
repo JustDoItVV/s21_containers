@@ -57,6 +57,11 @@ class queue {
   void pop() { data_.pop_front(); }
   void swap(queue &other) { data_.swap(other.data_); }
 
+  template <typename... Args>
+  void insert_many_back(Args &&...args) {
+    (push(std::forward<Args>(args)), ...);
+  }
+
  private:
   ConteinerList data_;
 

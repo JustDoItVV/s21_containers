@@ -212,4 +212,18 @@ TEST(stack, swapAndPopOperationstack2) {
     s21_stack_3.pop();
   }
 }
+
+TEST(stack, insertManyFront) {
+  s21::stack<int> s1({4});
+  std::stack<int> s2({1, 2, 3, 4});
+
+  s1.insert_many_front(3, 2, 1);
+
+  while (!s1.empty()) {
+    EXPECT_EQ(s1.top(), s2.top());
+    s1.pop();
+    s2.pop();
+  }
+}
+
 }  // namespace

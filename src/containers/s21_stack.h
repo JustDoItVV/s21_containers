@@ -42,9 +42,14 @@ class stack {
   size_t size() { return l.size(); };
 
   // Modifiers
-  void push(const_reference &value) { this->l.push_back(value); }
+  void push(const_reference &value) { this->l.push_front(value); }
   void pop() { this->l.pop_back(); }
   void swap(stack &other) { this->l.swap(other.l); }
+
+  template <typename... Args>
+  void insert_many_front(Args &&...args) {
+    (push(std::forward<Args>(args)), ...);
+  }
 
  private:
   std::list<value_type> l;
