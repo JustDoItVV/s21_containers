@@ -214,12 +214,13 @@ TEST(stack, swapAndPopOperationstack2) {
 }
 
 TEST(stack, insertManyFront) {
-  s21::stack<int> s1({4});
+  s21::stack<int> s1({1});
   std::stack<int> s2({1, 2, 3, 4});
 
-  s1.insert_many_front(3, 2, 1);
+  s1.insert_many_front(2, 3, 4);
 
   while (!s1.empty()) {
+    // std::cout << s1.top() << " " << s2.top() << std::endl;
     EXPECT_EQ(s1.top(), s2.top());
     s1.pop();
     s2.pop();

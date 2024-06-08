@@ -18,7 +18,7 @@ class stack {
   // Member functions
   stack() : l() { l = std::list<value_type>(); }
   stack(std::initializer_list<value_type> const &items) {
-    l = std::list<value_type>(items);
+    for (auto it : items) l.push_front(it);
   }
   stack(const stack &s) {
     l = std::list<value_type>(s.l.size());
@@ -35,7 +35,7 @@ class stack {
   }
 
   // Element access
-  const_reference top() { return l.back(); };
+  const_reference top() { return l.front(); };
 
   // SCapacity
   bool empty() { return l.empty(); };
@@ -43,7 +43,7 @@ class stack {
 
   // Modifiers
   void push(const_reference &value) { this->l.push_front(value); }
-  void pop() { this->l.pop_back(); }
+  void pop() { this->l.pop_front(); }
   void swap(stack &other) { this->l.swap(other.l); }
 
   template <typename... Args>
