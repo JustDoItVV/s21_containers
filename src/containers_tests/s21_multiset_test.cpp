@@ -213,7 +213,6 @@ TEST(multiset, find) {
   auto s21Iter = s21Multiset.find(3);
   auto stlIter = stlMultiset.find(3);
   auto s21Iter2 = s21Multiset.find(4);
-  auto stlIter2 = stlMultiset.find(4);
 
   EXPECT_EQ(*s21Iter, *stlIter);
   EXPECT_EQ(*s21Iter2, *s21Multiset.end());
@@ -255,4 +254,17 @@ TEST(multiset, upper_bound) {
   auto s21Iter = s21Multiset.upper_bound(3);
   auto stlIter = stlMultiset.upper_bound(3);
   EXPECT_EQ(*s21Iter, *stlIter);
+}
+
+TEST(multitest, insertMany) {
+  s21::multiset<int> s21Multiset{};
+  std::multiset<int> stlMultiset{0, 1, 2, 3, 3, 1, 6, 7, 6};
+
+  s21Multiset.insert_many(0, 1, 2, 3, 3, 1, 6, 7, 6);
+
+  auto s21Iter = s21Multiset.begin();
+  auto stlIter = stlMultiset.begin();
+  auto s21IterEnd = s21Multiset.end();
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, *stlIter);
 }

@@ -5,6 +5,8 @@
 #include <queue>  // replace with s21::queue when it's ready
 #include <utility>
 
+#include "s21_vector.h"
+
 namespace s21 {
 template <typename Key, typename Value>
 class RBTree {
@@ -142,8 +144,7 @@ RBTree<Key, Value>::~RBTree() {
  * *************************/
 
 template <typename Key, typename Value>
-typename RBTree<Key, Value>::RBTree &RBTree<Key, Value>::operator=(
-    RBTree &&other) {
+RBTree<Key, Value> &RBTree<Key, Value>::operator=(RBTree &&other) {
   if (this != &other) {
     root = other.root;
     other.root = nullptr;
@@ -233,8 +234,7 @@ void RBTree<Key, Value>::merge(RBTree &other) {
   Iterator it = constTree.begin();
   Iterator itEnd = other.end();
 
-  for (; it != itEnd; ++it)
-    std::pair<Iterator, bool> insertResult = insert(*it);
+  for (; it != itEnd; ++it) insert(*it);
   other.clear();
 }
 

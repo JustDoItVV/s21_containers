@@ -298,3 +298,16 @@ TEST(map, elementAccessOperator) {
   EXPECT_EQ(s21Map[4], 0);
   EXPECT_EQ(s21Map[6] = 6, 6);
 }
+
+TEST(map, insertMany) {
+  s21::map<int, int> s21Map{};
+  std::map<int, int> stlMap{{1, 1}, {2, 2}, {3, 3}, {5, 5}};
+  s21Map.insert_many(std::pair<int, int>(1, 1), std::pair<int, int>(2, 2),
+                     std::pair<int, int>(3, 3), std::pair<int, int>(5, 5));
+
+  auto s21Iter = s21Map.begin();
+  auto stlIter = stlMap.begin();
+  auto s21IterEnd = s21Map.end();
+  for (; s21Iter != s21IterEnd; ++s21Iter, ++stlIter)
+    EXPECT_EQ(*s21Iter, (*stlIter).second);
+}
