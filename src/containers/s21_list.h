@@ -1,8 +1,6 @@
 #ifndef __S21_CONTAINERS_LIST_H__
 #define __S21_CONTAINERS_LIST_H__
 
-// TODO: удалить данный документ после того, как Кирюша напишет свою реализацию
-
 #include <iostream>
 #include <limits>
 #include <utility>
@@ -164,69 +162,41 @@ class list {
     }
   }
 
-  // TODO: зарефакторить insert, вынести в несколько приватных методов
   iterator insert(iterator pos, const_reference value) {
-    ListNode<value_type>* new_node = new ListNode<value_type>(value);
-    if (pos.current_ == end_) {
-      if (tail_ == nullptr) {
-        head_ = new_node;
-        tail_ = new_node;
-        end_->previous_ = tail_;
-        tail_->next_ = end_;
-      } else {
-        new_node->previous_ = tail_;
-        tail_->next_ = new_node;
-        tail_ = new_node;
-        tail_->next_ = end_;
-      }
-    } else if (pos.current_->previous_ == nullptr) {
-      new_node->next_ = head_;
-      head_->previous_ = new_node;
-      head_ = new_node;
-    } else {
-      new_node->previous_ = pos.current_->previous_;
-      new_node->next_ = pos.current_;
-      pos.current_->previous_->next_ = new_node;
-      pos.current_->previous_ = new_node;
-    }
-    iterator result_iterator(new_node);
+    ListNode<value_type>* newNode = new ListNode<value_type>(value);
+
+    newNode->previous_ = pos.current_->previous_;
+    if (pos.current_->previous_)
+      pos.current_->previous_->next_ = newNode;
+    else
+      head_ = newNode;
+    pos.current_->previous_ = newNode;
+    newNode->next_ = pos.current_;
+
+    if (pos.current_ == end_) tail_ = newNode;
+
+    --pos;
     size_++;
-    return result_iterator;
+    return pos;
   }
-  // TODO: зарефакторить erase, вынести в несколько приватных методов
+
   void erase(iterator pos) {
-    if (!empty()) {
-      if (size_ == 1) {
-        head_ = nullptr;
-        tail_ = nullptr;
-        delete end_->previous_;
-        end_ = nullptr;
-      } else {
-        if (pos.current_->previous_ == nullptr) {
-          head_ = head_->next_;
-          delete head_->previous_;
-          head_->previous_ = nullptr;
-        } else if (pos.current_ == end_) {
-          tail_ = tail_->previous_;
-          delete end_->previous_;
-          end_->previous_ = tail_;
-          tail_->next_ = end_;
-          end_ = tail_;
-        } else if (pos.current_ == tail_) {
-          tail_ = tail_->previous_;
-          delete tail_->next_;
-          tail_->next_ = end_;
-          end_->previous_ = tail_;
-        } else {
-          ListNode<value_type>* new_previous_node = pos.current_->previous_;
-          ListNode<value_type>* new_next_node = pos.current_->next_;
-          delete pos.current_;
-          new_previous_node->next_ = new_next_node;
-          new_next_node->previous_ = new_previous_node;
-        }
-      }
-      size_--;
+    if (pos.current_->previous_)
+      pos.current_->previous_->next_ = pos.current_->next_;
+    else
+      head_ = pos.current_->next_;
+
+    pos.current_->next_->previous_ = pos.current_->previous_;
+
+    if (pos.current_ == tail_) {
+      if (pos.current_->previous_)
+        tail_ = pos.current_->previous_;
+      else
+        tail_ = end_;
     }
+
+    delete pos.current_;
+    size_--;
   }
 
   void push_back(const_reference value) { insert(end(), value); }
