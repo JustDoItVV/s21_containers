@@ -75,7 +75,7 @@ class list {
   using pointer = ListNode<T>*;
 
   // list functions
-  list() : end_(new ListNode<T>(value_type())), size_(0) {}
+  list() : head_(new ListNode<T>(value_type())), end_(head_), size_(0) {}
 
   list(size_type n) : end_(new ListNode<T>(value_type())), size_(0) {
     for (size_type i = 0; i < n; ++i) {
@@ -123,8 +123,16 @@ class list {
   list operator=(list&& l) {
     if (this != &l) {
       clear();
+      if (end_) delete end_;
+      if (head_) delete head_;
       end_ = l.end_;
+      tail_ = l.tail_;
+      head_ = l.head_;
+      size_ = l.size_;
       l.end_ = nullptr;
+      l.tail_ = nullptr;
+      l.head_ = nullptr;
+      l.size_ = 0;
     }
     return *this;
   }
@@ -173,6 +181,7 @@ class list {
     else
       head_ = newNode;
     pos.current_->previous_ = newNode;
+
     newNode->next_ = pos.current_;
 
     if (pos.current_ == end_) tail_ = newNode;
